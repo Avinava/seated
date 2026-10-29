@@ -7,9 +7,11 @@ import {
   occupancy,
   partyOf,
   sameSeat,
+  seatPositions,
   seatsAt,
   tableBounds,
   tableOf,
+  tableTop,
   unseated,
 } from '../src';
 import { event, guest, plan, table } from './support/builders';
@@ -70,8 +72,8 @@ describe('partyOf', () => {
 
 describe('geometry', () => {
   it.each([
-    ['round', 0, 168, 168],
-    ['head', 0, 330, 100],
+    ['round', 0, 159.34, 166],
+    ['head', 0, 330, 74],
     ['long', 0, 110, 244],
     ['long', 90, 244, 110],
   ] as const)('%s table rotated %i is %i x %i', (shape, rotation, w, h) => {
@@ -86,5 +88,27 @@ describe('geometry', () => {
     [900, 80, false],
   ])('a round table at (%i, %i) near the exit: %s', (x, y, expected) => {
     expect(isNearExit(table('t', { x, y }), plan)).toBe(expected);
+  });
+});
+
+describe('seatPositions', () => {
+  it('starts round tables at twelve o clock and goes clockwise', () => {
+    const [first, second] = seatPositions('round', 4, 0);
+    expect(first).toEqual({ x: 0, y: -68 });
+    expect(second).toEqual({ x: 68, y: 0 });
+  });
+
+  it('seats one side of a head table, centred', () => {
+    expect(seatPositions('head', 3, 0).map((p) => p.x)).toEqual([-40, 0, 40]);
+  });
+
+  it('fills one side of a long table, then the other, and turns with rotation', () => {
+    expect(seatPositions('long', 4, 0).map((p) => Math.sign(p.x))).toEqual([-1, -1, 1, 1]);
+    expect(seatPositions('long', 4, 90).map((p) => Math.sign(p.y))).toEqual([-1, -1, 1, 1]);
+  });
+
+  it('gives table tops their designed size', () => {
+    expect(tableTop('round', 10, 0)).toEqual({ w: 88, h: 88 });
+    expect(tableTop('long', 12, 90)).toEqual({ w: 244, h: 50 });
   });
 });
