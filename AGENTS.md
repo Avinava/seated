@@ -11,20 +11,25 @@ An event seating planner and a portfolio piece: who's coming, what they eat and 
 | `libs/domain`         | Pure TypeScript: model, geometry, edit ops, rules engine, auto-seat solver, CSV import, export and share formats, sample data. |
 | `libs/kit`            | The design kit: generated tokens, global styles, one component per folder with a spec and stories, Storybook config.           |
 | `apps/seated/src/app` | `core/` (storage, history, theme, hotkeys, clock), `state/` (event store), `shell/`, `features/<name>/`.                       |
-| `e2e`                 | Playwright flows, axe checks and the screenshot renderer.                                                                      |
-| `tools`               | `gen-tokens.ts`, `gate.sh`, `build-site.sh`.                                                                                   |
+| `e2e`                 | Playwright flows, axe checks, the screenshot renderer (`shots/`) and kit visual regression (`visual/`).                        |
+| `tools`               | `gen-tokens.ts`, `gate.sh`, `build-site.sh`, `serve-static.ts`, `shots.sh`, `record.sh`, `visual.sh`, `lighthouse.ts`.         |
 | `docs`                | Architecture, design, rules and solver notes, screenshots, media.                                                              |
 
 Layers only point down: `apps` -> `libs/kit` -> `libs/domain`. ESLint enforces it.
 
 ## Commands
 
-| Task                    | Command         |
-| ----------------------- | --------------- |
-| Serve the app           | `mise run app`  |
-| Everything for a commit | `mise run gate` |
-| Unit tests              | `mise run test` |
-| Regenerate tokens       | `mise run gen`  |
+| Task                    | Command                                     |
+| ----------------------- | ------------------------------------------- |
+| Serve the app           | `mise run app`                              |
+| Everything for a commit | `mise run gate`                             |
+| Unit tests              | `mise run test`                             |
+| Regenerate tokens       | `mise run gen`                              |
+| E2E flows and axe       | `mise run e2e`                              |
+| README screenshots      | `mise run shots`                            |
+| README clip (ffmpeg)    | `mise run record`                           |
+| Kit visual (Docker)     | `mise run visual`, `mise run visual-update` |
+| Lighthouse budgets      | `mise run lighthouse`                       |
 
 ## Rules
 
