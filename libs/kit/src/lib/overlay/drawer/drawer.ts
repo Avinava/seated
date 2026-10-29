@@ -37,6 +37,11 @@ export class StDrawer {
   readonly heading = input.required<string>();
   readonly description = input<string>();
   readonly closeLabel = input($localize`:@@st.overlay.close:Close`);
+  /**
+   * Asked before the drawer closes itself (Escape, scrim or close button).
+   * Return false to stay open, e.g. to confirm discarding unsaved changes first.
+   */
+  readonly canClose = input<() => boolean>(() => true);
   /** Emits after the drawer closes itself (Escape, scrim or close button). */
   readonly closed = output();
 
@@ -44,7 +49,7 @@ export class StDrawer {
   protected readonly descriptionId = `${this.titleId}-description`;
 
   close(): void {
-    if (!this.open()) return;
+    if (!this.open() || !this.canClose()()) return;
     this.open.set(false);
     this.closed.emit();
   }

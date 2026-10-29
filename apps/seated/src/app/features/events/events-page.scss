@@ -1,0 +1,269 @@
+:host {
+  display: block;
+}
+
+.page {
+  display: grid;
+  gap: var(--st-space-8);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--st-space-10) var(--st-space-12);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--st-space-4);
+}
+
+.kicker {
+  color: var(--st-text-3);
+}
+
+.title {
+  margin-top: var(--st-space-2);
+  font-size: var(--st-fs-4xl);
+}
+
+.head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--st-space-2);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+  gap: var(--st-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--st-space-5);
+  height: 100%;
+
+  &.is-past {
+    opacity: 0.72;
+  }
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--st-space-2);
+}
+
+.countdown {
+  color: var(--st-text-3);
+  font-size: var(--st-fs-sm);
+}
+
+.name {
+  font-size: var(--st-fs-2xl);
+}
+
+// One link per card; its ::after stretches over the whole card so any click lands on it.
+.link {
+  color: var(--st-text);
+  text-decoration: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  &:focus-visible {
+    outline: none;
+
+    &::after {
+      outline: 2px solid var(--st-accent);
+      outline-offset: 2px;
+    }
+  }
+}
+
+.meta {
+  margin-top: var(--st-space-2);
+  color: var(--st-text-3);
+  font-size: var(--st-fs-md);
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: var(--st-space-4);
+  margin-top: auto;
+  padding-top: var(--st-space-4);
+  border-top: 1px solid var(--st-line);
+}
+
+.replies {
+  display: flex;
+  align-items: center;
+  gap: var(--st-space-3);
+}
+
+.stat-text {
+  display: grid;
+  gap: 1px;
+}
+
+.stat-num {
+  color: var(--st-text);
+  font-size: var(--st-fs-md);
+  font-weight: 500;
+}
+
+.stat-label {
+  color: var(--st-text-3);
+  font-size: var(--st-fs-xs);
+}
+
+.seated {
+  display: grid;
+  flex: 1;
+  gap: 6px;
+  min-width: 0;
+}
+
+.seated-row {
+  display: flex;
+  justify-content: space-between;
+  color: var(--st-text-3);
+  font-size: var(--st-fs-sm);
+}
+
+.template-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--st-space-3);
+  min-height: 220px;
+  padding: var(--st-space-5);
+  border: 1.5px dashed var(--st-line-2);
+  border-radius: var(--st-radius-2xl);
+}
+
+.template-title {
+  font-size: var(--st-fs-base);
+  font-weight: 600;
+}
+
+.template-body {
+  color: var(--st-text-3);
+  font-size: var(--st-fs-md);
+  line-height: 1.5;
+}
+
+.template-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--st-space-2);
+  margin-top: auto;
+}
+
+.skeleton-card {
+  display: grid;
+  gap: var(--st-space-3);
+  padding: var(--st-space-5);
+  border: 1px solid var(--st-line);
+  border-radius: var(--st-radius-2xl);
+  background: var(--st-surface);
+}
+
+.skeleton-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--st-space-4);
+  margin-top: var(--st-space-4);
+}
+
+// First run ------------------------------------------------------------------
+
+.first-run {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--st-space-4);
+  max-width: 560px;
+  margin: 0 auto;
+  padding: var(--st-space-12) var(--st-space-6);
+  text-align: center;
+}
+
+.art {
+  width: 150px;
+  height: 150px;
+}
+
+.art-table {
+  fill: var(--st-surface-3);
+}
+
+.art-seat {
+  fill: none;
+  stroke: var(--st-line-2);
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
+
+  &.is-taken {
+    fill: var(--st-accent);
+    stroke: none;
+  }
+}
+
+.first-title {
+  font-size: var(--st-fs-4xl);
+}
+
+.first-body {
+  color: var(--st-text-2);
+  font-size: var(--st-fs-lg);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.first-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--st-space-2);
+  margin-top: var(--st-space-2);
+}
+
+.text-link {
+  padding: var(--st-space-1);
+  border: 0;
+  background: none;
+  color: var(--st-text-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:hover {
+    color: var(--st-text);
+  }
+}
+
+.tagline {
+  margin-top: var(--st-space-2);
+  color: var(--st-text-3);
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: var(--st-space-6) var(--st-space-4);
+  }
+
+  .title,
+  .first-title {
+    font-size: var(--st-fs-3xl);
+  }
+}

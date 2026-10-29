@@ -1,0 +1,291 @@
+<header class="head">
+  <div class="titles">
+    <h1 class="title" i18n="@@guests.title">Guests</h1>
+    <p class="summary st-num">{{ summary() }}</p>
+  </div>
+  <div class="head-actions">
+    <a stButton routerLink="../import">
+      <st-icon name="upload" />
+      <span i18n="@@guests.import">Import</span>
+    </a>
+    <button stButton variant="primary" type="button" (click)="openGuest('new')">
+      <st-icon name="plus" />
+      <span i18n="@@guests.addGuest">Add guest</span>
+    </button>
+  </div>
+</header>
+
+@if (total() > 0) {
+  <div class="toolbar">
+    <div class="filters" role="group" aria-label="Filter guests" i18n-aria-label="@@guests.filters">
+      <div class="search">
+        <st-icon name="search" class="search-icon" />
+        <input
+          #search
+          stInput
+          type="search"
+          class="search-input"
+          placeholder="Search names, parties, tags"
+          i18n-placeholder="@@guests.searchPlaceholder"
+          aria-label="Search guests"
+          i18n-aria-label="@@guests.searchLabel"
+          aria-keyshortcuts="/"
+          [value]="q() ?? ''"
+          (input)="setSearch(search.element.value)"
+        />
+      </div>
+      <st-segmented
+        aria-label="RSVP"
+        i18n-aria-label="@@guests.rsvpFilter"
+        [options]="rsvpOptions()"
+        [value]="rsvpValue()"
+        (valueChange)="setRsvpFilter($event)"
+      />
+      <select
+        #groupSel
+        stInput
+        class="compact"
+        aria-label="Group"
+        i18n-aria-label="@@guests.groupFilter"
+        (change)="setFilter('group', groupSel.element.value)"
+      >
+        <option value="" [selected]="!query().group" i18n="@@guests.allGroups">All groups</option>
+        @for (g of groups(); track g.id) {
+          <option [value]="g.id" [selected]="query().group === g.id">{{ g.label }}</option>
+        }
+      </select>
+      <select
+        #mealSel
+        stInput
+        class="compact"
+        aria-label="Meal"
+        i18n-aria-label="@@guests.mealFilter"
+        (change)="setFilter('meal', mealSel.element.value)"
+      >
+        <option value="" [selected]="!query().meal" i18n="@@guests.allMeals">All meals</option>
+        @for (m of meals; track m.value) {
+          <option [value]="m.value" [selected]="query().meal === m.value">{{ m.label }}</option>
+        }
+      </select>
+      <select
+        #tagSel
+        stInput
+        class="compact"
+        aria-label="Tag"
+        i18n-aria-label="@@guests.tagFilter"
+        (change)="setFilter('tag', tagSel.element.value)"
+      >
+        <option value="" [selected]="!query().tag" i18n="@@guests.allTags">All tags</option>
+        @for (t of tags(); track t) {
+          <option [value]="t" [selected]="query().tag === t">{{ t }}</option>
+        }
+      </select>
+    </div>
+  </div>
+  <div class="subbar">
+    <p class="shown st-num" role="status">
+      @if (filteredOn()) {
+        {{ shown() }}
+      }
+    </p>
+    <div class="view-controls">
+      <label class="inline-label">
+        <span i18n="@@guests.groupBy">Group by</span>
+        <select #bySel stInput class="compact" (change)="setFilter('by', bySel.element.value)">
+          @for (o of groupBys; track o.value) {
+            <option [value]="o.value" [selected]="query().by === o.value">{{ o.label }}</option>
+          }
+        </select>
+      </label>
+      <label class="inline-label">
+        <span i18n="@@guests.sortBy">Sort</span>
+        <select #sortSel stInput class="compact" (change)="setSortKey(sortSel.element.value)">
+          <option value="" [selected]="!query().sort" i18n="@@guests.sort.list">List order</option>
+          @for (o of sortKeys; track o.value) {
+            <option [value]="o.value" [selected]="query().sort?.key === o.value">{{ o.label }}</option>
+          }
+        </select>
+      </label>
+      @if (query().sort; as s) {
+        <button
+          stIconButton
+          type="button"
+          variant="secondary"
+          [icon]="s.dir === 'asc' ? 'arrow-up' : 'arrow-down'"
+          [aria-label]="s.dir === 'asc' ? sortAscLabel : sortDescLabel"
+          (click)="flipSort()"
+        ></button>
+      }
+    </div>
+  </div>
+}
+
+<div class="body">
+  @if (total() === 0) {
+    <st-empty-state icon="users" heading="No guests yet" i18n-heading="@@guests.emptyHeading">
+      <p i18n="@@guests.emptyBody">Import a spreadsheet of names, or add people one at a time.</p>
+      <ng-container actions>
+        <a stButton routerLink="../import">
+          <st-icon name="upload" />
+          <span i18n="@@guests.emptyImport">Import a list</span>
+        </a>
+        <button stButton variant="primary" type="button" (click)="openGuest('new')">
+          <st-icon name="plus" />
+          <span i18n="@@guests.emptyAdd">Add a guest</span>
+        </button>
+      </ng-container>
+    </st-empty-state>
+  } @else if (filtered().length === 0) {
+    <st-empty-state icon="search" heading="No guests match this view" i18n-heading="@@guests.noMatchHeading">
+      <p>{{ clearHint() }}</p>
+      <ng-container actions>
+        <button stButton type="button" (click)="clearFilters()" i18n="@@guests.clearFilters">Clear filters</button>
+      </ng-container>
+    </st-empty-state>
+  } @else {
+    <st-data-grid
+      class="grid"
+      label="Guests"
+      i18n-label="@@guests.gridLabel"
+      rowKey="id"
+      [rowHeight]="48"
+      [rows]="rows()"
+      [columns]="columns"
+      [sort]="query().sort"
+      (sortChange)="setSort($event)"
+      [(selection)]="selection"
+      (rowActivate)="openGuest($event.id)"
+    >
+      <ng-container *stCell="'name' of rows(); let g">
+        <span class="name-cell">
+          <st-avatar size="sm" [initials]="g.initials" [tone]="g.tone" />
+          <span class="name-text">
+            <a
+              class="name-link"
+              tabindex="-1"
+              [routerLink]="[]"
+              [queryParams]="{ guest: g.id }"
+              queryParamsHandling="merge"
+              (click)="$event.stopPropagation()"
+              >{{ g.name }}</a
+            >
+            <span class="sub">{{ g.plusOneOf ? plusOneText(g) : g.email }}</span>
+          </span>
+          @if (g.plusOneOf) {
+            <st-pill mono class="plus-one" [title]="plusOneText(g)">+1</st-pill>
+          }
+        </span>
+      </ng-container>
+
+      <ng-container *stCell="'party' of rows(); let g">
+        <span class="muted">{{ g.partyLabel }}</span>
+      </ng-container>
+
+      <ng-container *stCell="'group' of rows(); let g">
+        <span class="group-cell">
+          <span class="swatch" aria-hidden="true" [style.background]="'var(--st-cat-' + g.tone + ')'"></span>
+          <span class="muted">{{ g.groupLabel }}</span>
+        </span>
+      </ng-container>
+
+      <ng-container *stCell="'rsvp' of rows(); let g">
+        <span class="pick">
+          <st-pill [tone]="rsvpTone[g.rsvp]">{{ rsvpLabel[g.rsvp] }}</st-pill>
+          <select
+            #rsvpPick
+            class="pick-select"
+            tabindex="-1"
+            [attr.aria-label]="rsvpAria(g)"
+            (click)="$event.stopPropagation()"
+            (change)="setRowRsvp(g, $any(rsvpPick.value))"
+          >
+            @for (r of rsvps; track r.value) {
+              <option [value]="r.value" [selected]="r.value === g.rsvp">{{ r.label }}</option>
+            }
+          </select>
+        </span>
+      </ng-container>
+
+      <ng-container *stCell="'meal' of rows(); let g">
+        <span class="pick">
+          <span class="meal">{{ mealLabel[g.meal] }}<st-icon name="chevron-down" [size]="12" class="chev" /></span>
+          <select
+            #mealPick
+            class="pick-select"
+            tabindex="-1"
+            [attr.aria-label]="mealAria(g)"
+            (click)="$event.stopPropagation()"
+            (change)="setRowMeal(g, $any(mealPick.value))"
+          >
+            @for (m of meals; track m.value) {
+              <option
+                [value]="m.value"
+                [selected]="m.value === g.meal"
+                [disabled]="m.value === 'other' && !g.hasDietary"
+              >
+                {{ m.label }}
+              </option>
+            }
+          </select>
+        </span>
+      </ng-container>
+
+      <ng-container *stCell="'tags' of rows(); let g">
+        <span class="tags">
+          @for (t of g.tags.slice(0, 2); track t) {
+            <st-chip [label]="t" [removable]="false" />
+          }
+          @if (g.tags.length > 2) {
+            <span class="more st-num">{{ moreTags(g) }}</span>
+          }
+        </span>
+      </ng-container>
+
+      <ng-container *stCell="'table' of rows(); let g">
+        @if (g.tableLabel) {
+          <span class="st-num">{{ g.tableLabel }}</span>
+        } @else {
+          <span class="unseated">{{ noTable }}</span>
+        }
+      </ng-container>
+
+      <ng-container *stCell="'access' of rows(); let g">
+        @if (g.access) {
+          <st-icon name="accessibility" class="access" [label]="accessLabel" />
+        }
+      </ng-container>
+    </st-data-grid>
+  }
+
+  @if (selected().length > 0) {
+    <div class="bulk">
+      <st-guest-bulk-bar
+        [count]="selected().length"
+        [tables]="tables()"
+        (rsvp)="bulkRsvp($event)"
+        (tag)="bulkTag($event)"
+        (assign)="bulkAssign($event)"
+        (remove)="confirmRemove.set(true)"
+        (cleared)="clearSelection()"
+      />
+    </div>
+  }
+</div>
+
+<st-dialog
+  [(open)]="confirmRemove"
+  dialogRole="alertdialog"
+  hideClose
+  [heading]="removeHeading()"
+  description="Their seats free up and any rules about them go too. You can undo this."
+  i18n-description="@@guests.removeBody"
+>
+  <ng-container stDialogFooter>
+    <button stButton type="button" (click)="confirmRemove.set(false)" i18n="@@action.cancel">Cancel</button>
+    <button stButton variant="danger" type="button" (click)="bulkRemove()" i18n="@@guests.removeConfirm">Remove</button>
+  </ng-container>
+</st-dialog>
+
+@defer (on idle; when !!guest()) {
+  <st-guest-panel [guestKey]="guest() ?? null" (closed)="closePanel()" />
+}

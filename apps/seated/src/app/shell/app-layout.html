@@ -15,7 +15,13 @@
       </a>
     }
 
-    <button type="button" class="search" (click)="palette.open.set(true)">
+    <button
+      type="button"
+      class="search"
+      title="Search or jump to"
+      i18n-title="@@shell.searchLabel"
+      (click)="palette.open.set(true)"
+    >
       <st-icon name="search" />
       <span i18n="@@shell.search">Search or jump to</span>
       <st-kbd keys="Mod+K" />

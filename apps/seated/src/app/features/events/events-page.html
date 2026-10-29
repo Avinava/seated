@@ -1,0 +1,144 @@
+<input
+  #file
+  type="file"
+  class="st-sr-only"
+  accept=".json,application/json"
+  tabindex="-1"
+  aria-hidden="true"
+  (change)="importFile(file)"
+/>
+
+@switch (view()) {
+  @case ('empty') {
+    <section class="first-run" aria-labelledby="first-run-title">
+      <svg class="art" viewBox="0 0 160 160" aria-hidden="true" focusable="false">
+        <circle class="art-table" cx="80" cy="80" r="28" />
+        <circle class="art-seat is-taken" cx="80" cy="30" r="10" />
+        @for (s of artSeats; track $index) {
+          <circle class="art-seat" r="10" [attr.cx]="s.cx" [attr.cy]="s.cy" />
+        }
+      </svg>
+      <h1 id="first-run-title" class="first-title st-display" i18n="@@events.firstRun.title">Plan your first event</h1>
+      <p class="first-body" i18n="@@events.firstRun.body">
+        Add who's coming and set up your tables. Seated keeps track of meals, seating rules and who sits where.
+        Everything stays in this browser.
+      </p>
+      <div class="first-actions">
+        @for (t of templates; track t.kind) {
+          <button stButton size="lg" type="button" (click)="startNew(t.kind)">{{ t.label }}</button>
+        }
+      </div>
+      <button type="button" class="text-link" (click)="startNew('wedding', 'import')" i18n="@@events.firstRun.import">
+        or import a guest list
+      </button>
+      <button type="button" class="text-link" (click)="file.click()" i18n="@@events.firstRun.openExport">
+        Open an export file
+      </button>
+      <p class="tagline st-mono" i18n="@@events.firstRun.tagline">No account · Works offline · Export any time</p>
+    </section>
+  }
+  @default {
+    <div class="page">
+      <header class="head">
+        <div>
+          <p class="kicker st-mono">{{ today }}</p>
+          <h1 class="title st-display" i18n="@@events.title">Your events</h1>
+        </div>
+        <div class="head-actions">
+          <button stButton type="button" (click)="file.click()">
+            <st-icon name="upload" />
+            <span i18n="@@events.openExport">Open export</span>
+          </button>
+          <button stButton variant="primary" type="button" (click)="startNew('wedding')">
+            <st-icon name="plus" />
+            <span i18n="@@events.newEvent">New event</span>
+          </button>
+        </div>
+      </header>
+
+      @if (view() === 'loading') {
+        <div class="grid" aria-busy="true">
+          <span class="st-sr-only" i18n="@@events.loading">Loading your events</span>
+          @for (s of skeletons; track s) {
+            <div class="skeleton-card">
+              <st-skeleton width="84px" height="22px" />
+              <st-skeleton width="70%" height="26px" />
+              <st-skeleton width="50%" />
+              <div class="skeleton-foot">
+                <st-skeleton shape="circle" width="44px" />
+                <st-skeleton height="6px" />
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <ul class="grid" role="list">
+          @for (c of cards(); track c.id) {
+            <li>
+              <st-card interactive class="card" [class.is-past]="c.past">
+                <div class="card-top">
+                  <st-pill>{{ c.kindLabel }}</st-pill>
+                  <span class="countdown st-num" aria-hidden="true">{{ c.countdown }}</span>
+                </div>
+                <div>
+                  <h2 class="name st-display">
+                    <a class="link" [routerLink]="c.link" [attr.aria-describedby]="'event-meta-' + c.id">{{
+                      c.name
+                    }}</a>
+                  </h2>
+                  <p class="meta st-num" [id]="'event-meta-' + c.id">
+                    {{ c.when }}
+                    @if (c.place) {
+                      · {{ c.place }}
+                    }
+                    <span class="st-sr-only">· {{ c.countdown }}</span>
+                  </p>
+                </div>
+                <div class="stats">
+                  <div class="replies">
+                    <st-progress-ring
+                      [value]="c.replied"
+                      [max]="c.invited"
+                      label="Replies"
+                      i18n-label="@@events.card.replies"
+                    />
+                    <div class="stat-text">
+                      <span class="stat-num st-num">{{ c.repliedText }}</span>
+                      <span class="stat-label" i18n="@@events.card.replied">replied</span>
+                    </div>
+                  </div>
+                  <div class="seated">
+                    <div class="seated-row">
+                      <span i18n="@@events.card.seated">Seated</span>
+                      <span class="stat-num st-num">{{ c.seatedText }}</span>
+                    </div>
+                    <st-bar
+                      [value]="c.seated"
+                      [max]="c.coming"
+                      tone="accent"
+                      label="Seated"
+                      i18n-label="@@events.card.seatedBar"
+                    />
+                  </div>
+                </div>
+              </st-card>
+            </li>
+          }
+          <li class="template-card">
+            <h2 class="template-title" i18n="@@events.template.title">Start from a template</h2>
+            <p class="template-body" i18n="@@events.template.body">
+              Table layouts and guest groups set up for the kind of event you're planning.
+            </p>
+            <div class="template-actions">
+              @for (t of templates; track t.kind) {
+                <button stButton size="sm" type="button" (click)="startNew(t.kind)">{{ t.label }}</button>
+              }
+            </div>
+          </li>
+        </ul>
+      }
+    </div>
+  }
+}
+
+<st-new-event-dialog [(open)]="dialogOpen" [kind]="dialogKind()" [next]="dialogNext()" />

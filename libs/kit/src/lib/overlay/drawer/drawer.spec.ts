@@ -8,7 +8,13 @@ import { StDrawer } from './drawer';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <button type="button" id="opener" (click)="open.set(true)">Edit guest</button>
-    <st-drawer [(open)]="open" heading="Aarav Shah" description="Bride's family" (closed)="closes = closes + 1">
+    <st-drawer
+      [(open)]="open"
+      heading="Aarav Shah"
+      description="Bride's family"
+      [canClose]="guard"
+      (closed)="closes = closes + 1"
+    >
       <label>Name <input id="name" /></label>
       <button stDrawerFooter type="button" id="save">Save</button>
     </st-drawer>
@@ -17,6 +23,8 @@ import { StDrawer } from './drawer';
 class Host {
   readonly open = signal(false);
   closes = 0;
+  allowClose = true;
+  readonly guard = () => this.allowClose;
 }
 
 describe('StDrawer', () => {
@@ -86,6 +94,16 @@ describe('StDrawer', () => {
     root.querySelector<HTMLElement>('.scrim')!.click();
     await fixture.whenStable();
     expect(fixture.componentInstance.open()).toBe(false);
+  });
+
+  it('stays open when canClose says no', async () => {
+    const { fixture, openDrawer, dialog } = await setup();
+    fixture.componentInstance.allowClose = false;
+    await openDrawer();
+    dialog()!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await fixture.whenStable();
+    expect(fixture.componentInstance.open()).toBe(true);
+    expect(fixture.componentInstance.closes).toBe(0);
   });
 
   it('does not emit closed when the parent closes it', async () => {

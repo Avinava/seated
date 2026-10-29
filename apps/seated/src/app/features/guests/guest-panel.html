@@ -1,0 +1,215 @@
+<st-drawer
+  [open]="open()"
+  [heading]="heading()"
+  [description]="description()"
+  [canClose]="canClose"
+  (closed)="closed.emit()"
+>
+  @if (!isNew()) {
+    <section class="status" aria-label="Seat and rules" i18n-aria-label="@@guest.statusLabel">
+      <div class="seat">
+        <st-icon name="seat" />
+        @if (seat(); as s) {
+          <span class="st-num">{{ s }}</span>
+        } @else {
+          <span class="muted" i18n="@@guest.notSeated">Not seated</span>
+        }
+        <a class="seat-link" [routerLink]="seatingLink()" i18n="@@guest.openSeating">Open seating</a>
+      </div>
+      @for (c of conflicts(); track c.id) {
+        <div class="conflict">
+          <st-icon name="alert" />
+          <div>
+            <p class="conflict-title">{{ c.title }}</p>
+            <p class="conflict-detail">{{ c.detail }}</p>
+          </div>
+        </div>
+      }
+    </section>
+  }
+
+  <form id="guest-form" class="form" [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <st-field label="Full name" i18n-label="@@guest.name" [error]="nameError()" required>
+      <input stInput formControlName="name" autocomplete="off" />
+    </st-field>
+
+    <div class="pair">
+      <st-field
+        label="Email"
+        i18n-label="@@guest.email"
+        [hint]="emailPending() ? checkingHint : undefined"
+        [error]="emailError()"
+      >
+        <input stInput type="email" formControlName="email" autocomplete="off" [attr.aria-busy]="emailPending()" />
+      </st-field>
+      <st-field label="Group" i18n-label="@@guest.group">
+        <select stInput formControlName="groupId">
+          @for (g of groups(); track g.id) {
+            <option [value]="g.id">{{ g.label }}</option>
+          }
+        </select>
+      </st-field>
+    </div>
+
+    <st-field
+      label="Party"
+      i18n-label="@@guest.party"
+      hint="Pick a household or type a new one"
+      i18n-hint="@@guest.partyHint"
+    >
+      <input stInput formControlName="party" list="guest-parties" autocomplete="off" />
+    </st-field>
+    <datalist id="guest-parties">
+      @for (p of parties(); track p.id) {
+        <option [value]="p.label"></option>
+      }
+    </datalist>
+
+    <div class="group">
+      <span class="group-label" aria-hidden="true" i18n="@@guest.rsvp">RSVP</span>
+      <st-segmented
+        class="rsvp"
+        aria-label="RSVP"
+        i18n-aria-label="@@guest.rsvp"
+        [options]="rsvpOptions"
+        [value]="rsvp()"
+        (valueChange)="setRsvp($event)"
+      />
+    </div>
+
+    <div class="pair">
+      <st-field label="Meal" i18n-label="@@guest.meal">
+        <select stInput formControlName="meal">
+          @for (m of meals; track m.value) {
+            <option [value]="m.value">{{ m.label }}</option>
+          }
+        </select>
+      </st-field>
+      <st-field label="Dietary needs" i18n-label="@@guest.dietary" [required]="mealIsOther()" [error]="dietaryError()">
+        <input
+          stInput
+          formControlName="dietary"
+          autocomplete="off"
+          placeholder="No nuts"
+          i18n-placeholder="@@guest.dietaryPlaceholder"
+        />
+      </st-field>
+    </div>
+
+    <st-field label="Tags" i18n-label="@@guest.tags" hint="Enter or comma adds a tag" i18n-hint="@@guest.tagsHint">
+      <div class="tags">
+        @for (t of tags(); track t) {
+          <st-chip [label]="t" (removed)="removeTag(t)" />
+        }
+        <input
+          stInput
+          class="tag-input"
+          list="guest-tags"
+          autocomplete="off"
+          [value]="tagDraft()"
+          (input)="tagDraft.set($any($event.target).value)"
+          (keydown)="onTagKeydown($event)"
+          (blur)="addTag()"
+        />
+      </div>
+    </st-field>
+    <datalist id="guest-tags">
+      @for (t of knownTags(); track t) {
+        <option [value]="t"></option>
+      }
+    </datalist>
+
+    <div class="access">
+      <st-switch [checked]="access()" (checkedChange)="setAccess($event)">
+        <span class="access-text">
+          <span class="access-title" i18n="@@guest.access">Needs step-free access</span>
+          <span class="access-hint" i18n="@@guest.accessHint">Adds a rule: seat near the exit</span>
+        </span>
+      </st-switch>
+    </div>
+
+    <div class="plus-ones" role="group" aria-labelledby="guest-plus-ones" formArrayName="plusOnes">
+      <div class="plus-head">
+        <span class="group-label" id="guest-plus-ones" i18n="@@guest.plusOnes">Plus-ones</span>
+        <button stButton size="sm" type="button" (click)="addPlusOne()">
+          <st-icon name="plus" [size]="14" />
+          <span i18n="@@guest.addPlusOne">Add plus-one</span>
+        </button>
+      </div>
+      @for (row of plusOneRows(); track row; let i = $index) {
+        <div class="plus-row" [formGroupName]="i">
+          <st-field [label]="plusOneLabel(i)" [error]="plusOneError(i)" required>
+            <input stInput formControlName="name" autocomplete="off" [attr.data-plus-one]="i" />
+          </st-field>
+          <button
+            stIconButton
+            type="button"
+            icon="trash"
+            variant="secondary"
+            class="plus-remove"
+            [aria-label]="removePlusOneLabel(i)"
+            (click)="removePlusOne(i)"
+          ></button>
+        </div>
+      } @empty {
+        <p class="muted small" i18n="@@guest.plusOnesEmpty">
+          Plus-ones get their own place card and meal, and sit with this guest's party.
+        </p>
+      }
+    </div>
+
+    <st-field label="Notes" i18n-label="@@guest.notes">
+      <textarea
+        stInput
+        formControlName="notes"
+        rows="3"
+        placeholder="Anything the venue or host should know"
+        i18n-placeholder="@@guest.notesPlaceholder"
+      ></textarea>
+    </st-field>
+  </form>
+
+  <ng-container stDrawerFooter>
+    @if (!isNew()) {
+      <button stButton variant="ghost" type="button" class="delete" (click)="confirmDelete.set(true)">
+        <st-icon name="trash" [size]="14" />
+        <span i18n="@@guest.delete">Delete</span>
+      </button>
+    }
+    <button stButton type="button" (click)="requestClose()" i18n="@@action.cancel">Cancel</button>
+    <button stButton variant="primary" type="submit" form="guest-form">
+      {{ isNew() ? addLabel : saveLabel }}
+    </button>
+  </ng-container>
+</st-drawer>
+
+<st-dialog
+  [(open)]="confirmDiscard"
+  dialogRole="alertdialog"
+  hideClose
+  heading="Discard your changes?"
+  i18n-heading="@@guest.discardHeading"
+  description="The edits to this guest have not been saved."
+  i18n-description="@@guest.discardBody"
+>
+  <ng-container stDialogFooter>
+    <button stButton type="button" (click)="confirmDiscard.set(false)" i18n="@@guest.keepEditing">Keep editing</button>
+    <button stButton variant="danger" type="button" (click)="discard()" i18n="@@guest.discard">Discard</button>
+  </ng-container>
+</st-dialog>
+
+<st-dialog
+  [(open)]="confirmDelete"
+  dialogRole="alertdialog"
+  hideClose
+  [heading]="deleteHeading()"
+  description="Their seat frees up and any rules about them go too. You can undo this."
+  i18n-description="@@guest.deleteBody"
+>
+  <ng-container stDialogFooter>
+    <button stButton type="button" (click)="confirmDelete.set(false)" i18n="@@action.cancel">Cancel</button>
+    <button stButton variant="danger" type="button" (click)="deleteGuest()" i18n="@@guest.deleteConfirm">
+      Delete guest
+    </button>
+  </ng-container>
+</st-dialog>

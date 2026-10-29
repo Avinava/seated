@@ -1,0 +1,149 @@
+:host {
+  display: contents;
+}
+
+.status {
+  display: grid;
+  gap: var(--st-space-2);
+  margin-bottom: var(--st-space-5);
+}
+
+.seat {
+  display: flex;
+  align-items: center;
+  gap: var(--st-space-2);
+  padding: var(--st-space-2) var(--st-space-3);
+  border-radius: var(--st-radius-lg);
+  background: var(--st-surface-2);
+  color: var(--st-text);
+  font-size: var(--st-fs-md);
+
+  st-icon {
+    color: var(--st-text-3);
+  }
+}
+
+.seat-link {
+  margin-left: auto;
+  color: var(--st-text-2);
+  font-size: var(--st-fs-sm);
+  text-underline-offset: 3px;
+
+  &:hover {
+    color: var(--st-text);
+  }
+}
+
+.conflict {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--st-space-2);
+  padding: var(--st-space-2) var(--st-space-3);
+  border-radius: var(--st-radius-lg);
+  background: var(--st-danger-soft);
+  font-size: var(--st-fs-md);
+
+  st-icon {
+    margin-top: 2px;
+    color: var(--st-danger);
+  }
+}
+
+.conflict-title {
+  font-weight: 600;
+}
+
+.conflict-detail,
+.muted {
+  color: var(--st-text-2);
+}
+
+.small {
+  font-size: var(--st-fs-sm);
+}
+
+.form {
+  display: grid;
+  gap: var(--st-space-5);
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  align-items: start;
+  gap: var(--st-space-3);
+}
+
+.group {
+  display: grid;
+  gap: 6px;
+}
+
+.group-label {
+  font-size: var(--st-fs-md);
+  font-weight: 500;
+}
+
+.rsvp {
+  justify-self: start;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.tag-input {
+  flex: 1;
+  min-width: 140px;
+}
+
+.access {
+  padding: var(--st-space-3) var(--st-space-4);
+  border: 1px solid var(--st-line);
+  border-radius: var(--st-radius-lg);
+}
+
+.access-text {
+  display: grid;
+  gap: 2px;
+}
+
+.access-title {
+  font-weight: 500;
+}
+
+.access-hint {
+  color: var(--st-text-3);
+  font-size: var(--st-fs-sm);
+}
+
+.plus-ones {
+  display: grid;
+  gap: var(--st-space-3);
+}
+
+.plus-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.plus-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--st-space-2);
+}
+
+// Line the remove button up with the input, below the field label.
+.plus-remove {
+  margin-top: 22px;
+}
+
+.delete {
+  margin-right: auto;
+  color: var(--st-danger);
+}
