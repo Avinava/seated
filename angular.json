@@ -41,15 +41,17 @@
               "node_modules/@fontsource-variable/geist-mono/wght.css",
               "libs/kit/src/styles/index.scss",
               "apps/seated/src/styles.scss"
-            ]
+            ],
+            "server": "apps/seated/src/main.server.ts",
+            "outputMode": "static"
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "440kB",
-                  "maximumError": "500kB"
+                  "maximumWarning": "480kB",
+                  "maximumError": "550kB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -57,7 +59,8 @@
                   "maximumError": "10kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "serviceWorker": "apps/seated/ngsw-config.json"
             },
             "development": {
               "optimization": false,

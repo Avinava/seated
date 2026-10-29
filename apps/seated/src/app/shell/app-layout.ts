@@ -1,5 +1,14 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  afterNextRender,
+  computed,
+  effect,
+  inject,
+  untracked,
+} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { StCommandPalette, StIcon, StIconButton, StKbd, StToastHost, type IconName } from '@seated/kit';
 import { Connectivity } from '../core/connectivity';
@@ -77,7 +86,7 @@ export class AppLayout {
   });
 
   protected readonly themeLabel = computed(() =>
-    this.theme.preference() && this.theme.resolved() === 'dark'
+    this.theme.resolved() === 'dark'
       ? $localize`:@@shell.toLight:Switch to light`
       : $localize`:@@shell.toDark:Switch to dark`,
   );
@@ -169,7 +178,8 @@ export class AppLayout {
 
   constructor() {
     const destroyRef = inject(DestroyRef);
-    void this.events.load();
+    // Storage lives in the browser; the prerendered shell shows skeletons until this runs.
+    afterNextRender(() => void this.events.load());
     this.palette.register(this.shellCommands, destroyRef);
     this.hotkeys.on('mod+k', () => this.palette.open.update((o) => !o), destroyRef);
     this.hotkeys.on('mod+z', () => this.actions.undo(), destroyRef);

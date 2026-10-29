@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    .top { fill: #181e24 } .seat { fill: none; stroke: #181e24; stroke-width: 1.6 }
+    @media (prefers-color-scheme: dark) { .top { fill: #eef0f2 } .seat { stroke: #eef0f2 } }
+  </style>
+  <circle class="top" cx="16" cy="16" r="7"/>
+  <circle cx="16" cy="3.5" r="2.6" fill="#0f8a83" stroke="#0f8a83" stroke-width="1.6"/>
+  <circle class="seat" cx="26.83" cy="9.75" r="2.6"/>
+  <circle class="seat" cx="26.83" cy="22.25" r="2.6"/>
+  <circle class="seat" cx="16" cy="28.5" r="2.6"/>
+  <circle class="seat" cx="5.17" cy="22.25" r="2.6"/>
+  <circle class="seat" cx="5.17" cy="9.75" r="2.6"/>
+</svg>

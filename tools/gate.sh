@@ -20,8 +20,9 @@ for project in libs/domain/tsconfig.json libs/kit/tsconfig.lib.json libs/kit/tsc
   pnpm exec tsc -p "$project" --noEmit
 done
 
+# index.html is exempt: theme-color metas need literal colours before any CSS loads.
 step 'no raw style in the app (tokens only)'
-if rg -n --glob '*.{ts,html,scss,css}' -e '#[0-9a-fA-F]{3,8}\b' -e 'oklch\(' -e 'rgba?\(' -e 'font-family' apps/seated/src; then
+if rg -n --glob '*.{ts,html,scss,css}' -e '#[0-9a-fA-F]{3,8}\b' -e 'oklch\(' -e 'rgba?\(' -e 'font-family' apps/seated/src --glob '!index.html'; then
   echo 'Raw colours or fonts found in apps/. Use kit tokens.' >&2
   exit 1
 fi

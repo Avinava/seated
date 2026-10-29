@@ -105,12 +105,13 @@ describe('EventsPage', () => {
     };
 
     await pick('{ nope');
-    expect(TestBed.inject(ToastService).current()).toMatchObject({ tone: 'danger' });
+    // The export-file validator loads on demand, so wait for it rather than a fixed number of ticks.
+    await vi.waitFor(() => expect(TestBed.inject(ToastService).current()).toMatchObject({ tone: 'danger' }));
     expect(TestBed.inject(ToastService).current()?.message).toContain('not readable JSON');
 
     const wedding = createSampleEvents(NOW)[0]!;
     await pick(JSON.stringify(toExportFile(wedding, NOW.toISOString())));
-    expect(store.events().some((e) => e.id === wedding.id)).toBe(true);
-    expect(router.url).toBe('/events/ev-wedding/seating');
+    await vi.waitFor(() => expect(store.events().some((e) => e.id === wedding.id)).toBe(true));
+    await vi.waitFor(() => expect(router.url).toBe('/events/ev-wedding/seating'));
   });
 });

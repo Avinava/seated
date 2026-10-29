@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Injectable, effect, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 
 export type ThemePreference = 'system' | 'light' | 'dark';
 
@@ -11,7 +11,23 @@ export class Theme {
   private readonly doc = inject(DOCUMENT);
   readonly preference = signal<ThemePreference>(read());
 
+  /** The system setting, kept live so 'system' follows the OS. Light when there is no window (prerendering). */
+  private readonly systemDark = signal(false);
+
+  /** The theme actually showing. */
+  readonly resolved = computed<'light' | 'dark'>(() => {
+    const pref = this.preference();
+    if (pref !== 'system') return pref;
+    return this.systemDark() ? 'dark' : 'light';
+  });
+
   constructor() {
+    const query = this.doc.defaultView?.matchMedia?.('(prefers-color-scheme: dark)');
+    if (query) {
+      this.systemDark.set(query.matches);
+      query.addEventListener('change', (e) => this.systemDark.set(e.matches));
+    }
+
     effect(() => {
       const pref = this.preference();
       const root = this.doc.documentElement;
@@ -19,13 +35,6 @@ export class Theme {
       else root.setAttribute('data-theme', pref);
       write(pref);
     });
-  }
-
-  /** The theme actually showing, resolving 'system' through the media query. */
-  resolved(): 'light' | 'dark' {
-    const pref = this.preference();
-    if (pref !== 'system') return pref;
-    return this.doc.defaultView?.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
 
   toggle(): void {

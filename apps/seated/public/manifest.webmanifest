@@ -1,0 +1,16 @@
+{
+  "name": "Seated",
+  "short_name": "Seated",
+  "description": "Who's coming, what they eat and where they sit. An event seating planner that works offline.",
+  "lang": "en-IN",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
+  "background_color": "#f9f9f7",
+  "theme_color": "#f9f9f7",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

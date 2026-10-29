@@ -1,4 +1,4 @@
-import { type ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { type ApplicationConfig, provideBrowserGlobalErrorListeners, isDevMode } from '@angular/core';
 import {
   TitleStrategy,
   provideRouter,
@@ -9,6 +9,8 @@ import {
 import { routes } from './app.routes';
 import { provideStorage } from './core/storage/provide-storage';
 import { SeatedTitleStrategy } from './shell/title-strategy';
+import { provideServiceWorker } from '@angular/service-worker';
+import { provideClientHydration } from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,5 +23,10 @@ export const appConfig: ApplicationConfig = {
     ),
     { provide: TitleStrategy, useClass: SeatedTitleStrategy },
     provideStorage(),
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
+    provideClientHydration(),
   ],
 };
