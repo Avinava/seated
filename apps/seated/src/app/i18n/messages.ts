@@ -28,6 +28,11 @@ export function count(n: number): string {
   return numberFormat.format(n);
 }
 
+/** "The Mehtas" reads "the Mehtas" inside a sentence. */
+export function midSentence(label: string): string {
+  return label.replace(/^The /, 'the ');
+}
+
 export function plural(n: number, one: string, many: string): string {
   return n === 1 ? one : many;
 }
@@ -66,7 +71,7 @@ export function ruleTitle(d: RuleDescription): string {
     case 'apart':
       return $localize`:@@rule.apart:Keep ${names(d.names)}:names: apart`;
     case 'together':
-      return $localize`:@@rule.together:Keep ${d.partyLabel ?? names(d.names)}:party: together`;
+      return $localize`:@@rule.together:Keep ${d.partyLabel ? midSentence(d.partyLabel) : names(d.names)}:party: together`;
     case 'near-exit':
       return $localize`:@@rule.nearExit:Seat ${names(d.names)}:name: near the exit`;
     case 'capacity':
@@ -127,7 +132,7 @@ export function explain(e: Explanation): { text: string; needsYou: boolean } {
   switch (e.code) {
     case 'placed-party':
       return {
-        text: $localize`:@@explain.party:Seated ${e.partyLabel}:party: (${e.count}:count:) together at ${e.tableLabel}:table:`,
+        text: $localize`:@@explain.party:Seated ${midSentence(e.partyLabel)}:party: (${e.count}:count:) together at ${e.tableLabel}:table:`,
         needsYou: false,
       };
     case 'placed-guest':
@@ -141,7 +146,7 @@ export function explain(e: Explanation): { text: string; needsYou: boolean } {
       return { text: $localize`:@@explain.apart:Kept ${names(e.names)}:names: at different tables`, needsYou: false };
     case 'made-room':
       return {
-        text: $localize`:@@explain.madeRoom:Moved ${names(e.names)}:names: to make room for ${e.forLabel}:for: at ${e.tableLabel}:table:`,
+        text: $localize`:@@explain.madeRoom:Moved ${names(e.names)}:names: to make room for ${midSentence(e.forLabel)}:for: at ${e.tableLabel}:table:`,
         needsYou: false,
       };
     case 'needs-you':

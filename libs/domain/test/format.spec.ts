@@ -236,11 +236,28 @@ describe('share links', () => {
       venue: 'Hall',
       city: 'Pune',
       tables: [
-        { label: 'Head', shape: 'head' },
-        { label: 'T2', shape: 'round' },
+        { label: 'Head', shape: 'head', seats: 10 },
+        { label: 'T2', shape: 'round', seats: 10 },
       ],
       guests: [{ name: 'Asha', table: 'Head', seat: 0 }],
     });
+  });
+
+  it.each([
+    ['without seat counts, as older links were made', undefined, true],
+    ['with a seat count', 10, true],
+    ['with a broken seat count', 0, false],
+  ])('reads a table %s', async (_, seats, valid) => {
+    const payload = { ...toSharePayload(small), tables: [{ label: 'T1', shape: 'round', seats }] };
+    const bytes = new TextEncoder().encode(JSON.stringify(payload));
+    const packed = new Uint8Array(
+      await new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer(),
+    );
+    const result = await decodeShare(toBase64Url(new Uint8Array([1, ...packed]))).then(
+      (p) => p.tables[0]?.seats,
+      (e: unknown) => (e as ShareDecodeError).code,
+    );
+    expect(result).toBe(valid ? seats : 'invalid-payload');
   });
 
   it('round-trips the sample wedding without private fields', async () => {
@@ -279,6 +296,24 @@ describe('share links', () => {
     const token = toBase64Url(new Uint8Array([1, ...packed]));
     const err = await decodeShare(token).catch((e: unknown) => e);
     expect(err).toBeInstanceOf(ShareDecodeError);
+    expect((err as ShareDecodeError).code).toBe('invalid-payload');
+  });
+
+  it.each([
+    [{}, undefined],
+    [{ tablemates: true }, undefined],
+    [{ tablemates: false }, false],
+  ])('carries the tablemates choice %j', async (options, expected) => {
+    expect(toSharePayload(small, options).tablemates).toBe(expected);
+    expect((await decodeShare(await encodeShare(small, options))).tablemates).toBe(expected);
+  });
+
+  it('rejects a tablemates flag that is not a boolean', async () => {
+    const bytes = new TextEncoder().encode(JSON.stringify({ ...toSharePayload(small), tablemates: 'no' }));
+    const packed = new Uint8Array(
+      await new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer(),
+    );
+    const err = await decodeShare(toBase64Url(new Uint8Array([1, ...packed]))).catch((e: unknown) => e);
     expect((err as ShareDecodeError).code).toBe('invalid-payload');
   });
 

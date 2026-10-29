@@ -1,0 +1,149 @@
+:host {
+  display: block;
+}
+
+.page {
+  display: grid;
+  gap: var(--st-space-8);
+  max-width: 1120px;
+  padding: var(--st-space-8);
+}
+
+@media (max-width: 720px) {
+  .page {
+    padding: var(--st-space-6) var(--st-space-4);
+  }
+}
+
+.head {
+  display: grid;
+  gap: var(--st-space-2);
+  max-width: 60ch;
+}
+
+.eyebrow,
+.preview-label {
+  color: var(--st-text-3);
+}
+
+.title {
+  font-size: var(--st-fs-4xl);
+}
+
+.lede {
+  color: var(--st-text-2);
+  font-size: var(--st-fs-lg);
+  text-wrap: pretty;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: var(--st-space-8);
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.controls,
+.stack {
+  display: grid;
+  gap: var(--st-space-5);
+}
+
+.link-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--st-space-3);
+}
+
+.section-title {
+  font-size: var(--st-fs-lg);
+  font-weight: 600;
+}
+
+.link-row {
+  display: flex;
+  gap: var(--st-space-2);
+}
+
+.link-row st-skeleton {
+  flex: 1;
+}
+
+.link {
+  flex: 1;
+  min-width: 0;
+  height: var(--st-size-control);
+  padding: 0 var(--st-space-3);
+  border: 1px solid var(--st-line);
+  border-radius: var(--st-radius-md);
+  background: var(--st-surface-2);
+  color: var(--st-text-2);
+  font-size: var(--st-fs-sm);
+  text-overflow: ellipsis;
+}
+
+.open {
+  justify-self: start;
+  margin-top: calc(var(--st-space-3) * -1);
+  color: var(--st-text-2);
+  font-size: var(--st-fs-md);
+  text-underline-offset: 3px;
+}
+
+.open:hover {
+  color: var(--st-text);
+}
+
+.switch-row {
+  padding-top: var(--st-space-4);
+  border-top: 1px solid var(--st-line);
+}
+
+.switch-text {
+  display: grid;
+  gap: 2px;
+  font-weight: 500;
+}
+
+.switch-hint {
+  color: var(--st-text-3);
+  font-size: var(--st-fs-sm);
+  font-weight: 400;
+}
+
+.privacy {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--st-space-2);
+  padding: var(--st-space-3);
+  border-radius: var(--st-radius-md);
+  background: var(--st-surface-2);
+  color: var(--st-text-2);
+  font-size: var(--st-fs-md);
+}
+
+.privacy st-icon {
+  flex: none;
+  margin-top: 2px;
+}
+
+.preview {
+  display: grid;
+  gap: var(--st-space-3);
+  justify-items: center;
+  position: sticky;
+  top: var(--st-space-6);
+}
+
+@media (max-width: 1100px) {
+  .preview {
+    position: static;
+  }
+}

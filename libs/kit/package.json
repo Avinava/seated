@@ -1,0 +1,9 @@
+{
+  "name": "@seated/kit",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ]
+}

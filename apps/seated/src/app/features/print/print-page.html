@@ -1,0 +1,63 @@
+@if (event(); as e) {
+  <div class="page">
+    <header class="toolbar" data-noprint>
+      <h1 class="title" i18n="@@print.title">Print</h1>
+      <st-segmented
+        aria-label="What to print"
+        i18n-aria-label="@@print.modeLabel"
+        [options]="modes"
+        [value]="view()"
+        (valueChange)="setParam('mode', $event)"
+      />
+      @if (view() === 'cards') {
+        <select
+          #tableSelect
+          stInput
+          class="select"
+          aria-label="Table"
+          i18n-aria-label="@@print.tableLabel"
+          (change)="setParam('table', tableSelect.element.value || null)"
+        >
+          <option value="" [selected]="!tableId()" i18n="@@print.allTables">All tables</option>
+          @for (t of e.tables; track t.id) {
+            <option [value]="t.id" [selected]="tableId() === t.id">{{ t.label }}</option>
+          }
+        </select>
+        <st-switch [checked]="showMeal()" (checkedChange)="setParam('meals', $event ? '1' : null)">
+          <span i18n="@@print.mealMarker">Meal marker</span>
+        </st-switch>
+      }
+      <span class="note st-mono" aria-live="polite">{{ note() }}</span>
+      <button type="button" stButton variant="primary" (click)="print()">
+        <st-icon name="printer" />
+        <span i18n="@@print.print">Print</span>
+      </button>
+    </header>
+
+    <div class="desk">
+      @if (view() === 'cards') {
+        @if (cards().length) {
+          <div class="paper">
+            <st-place-cards [cards]="cards()" [showMeal]="showMeal()" />
+          </div>
+        } @else {
+          <st-empty-state icon="seat" heading="Nobody is seated yet" i18n-heading="@@print.noneHeading">
+            <p i18n="@@print.noneBody">Seat guests first, then come back to print their cards.</p>
+            <a actions stButton routerLink="../seating" i18n="@@print.toSeating">Go to seating</a>
+          </st-empty-state>
+        }
+      } @else {
+        @if (blocks().length) {
+          <div class="paper">
+            <st-table-list [blocks]="blocks()" [totals]="totals()" [eventName]="e.name" [subtitle]="subtitle()" />
+          </div>
+        } @else {
+          <st-empty-state icon="table" heading="No tables have guests yet" i18n-heading="@@print.noTablesHeading">
+            <p i18n="@@print.noTablesBody">The table list fills in as you seat people.</p>
+            <a actions stButton routerLink="../seating" i18n="@@print.toSeating2">Go to seating</a>
+          </st-empty-state>
+        }
+      }
+    </div>
+  </div>
+}

@@ -55,8 +55,9 @@ export const EventStore = signalStore(
     };
   }),
   withMethods((store, repo = inject(EventRepository), clock = inject(CLOCK), seed = inject(SampleSeed)) => ({
-    async open(id: EventId): Promise<void> {
-      if (store.doc()?.id === id) return;
+    /** Load an event. `reload` reads it again even when it is already open, e.g. after restoring a file. */
+    async open(id: EventId, { reload = false }: { reload?: boolean } = {}): Promise<void> {
+      if (!reload && store.doc()?.id === id) return;
       patchState(store, { status: 'loading' });
       await seed.ready();
       const event = await repo.get(id);

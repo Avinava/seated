@@ -1,0 +1,96 @@
+<div class="head">
+  <div>
+    <h2 class="title" tabindex="-1" data-step-heading i18n="@@import.reviewHeading">Review</h2>
+    <p class="summary" aria-live="polite">{{ summary() }}</p>
+  </div>
+  <st-segmented
+    aria-label="Show rows"
+    i18n-aria-label="@@import.filterLabel"
+    [options]="filters()"
+    [value]="wizard.filter()"
+    (valueChange)="wizard.filter.set($event ?? 'all')"
+  />
+</div>
+
+<div class="scroller">
+  <table>
+    <caption class="st-sr-only" i18n="@@import.tableCaption">
+      Rows in the file
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col" class="line" i18n="@@import.col.line">Line</th>
+        <th scope="col" i18n="@@import.col.name">Name</th>
+        <th scope="col" i18n="@@import.col.email">Email</th>
+        <th scope="col" i18n="@@import.col.group">Group</th>
+        <th scope="col" i18n="@@import.col.rsvp">RSVP</th>
+        <th scope="col" i18n="@@import.col.meal">Meal</th>
+        <th scope="col" i18n="@@import.col.status">Status</th>
+        <th scope="col" i18n="@@import.col.outcome">What happens</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (r of wizard.visible(); track r.index) {
+        <tr [attr.data-outcome]="r.outcome">
+          <td class="line st-num">{{ r.line }}</td>
+          <td class="name">
+            {{ r.row.values.name }}
+            @for (e of errorsFor(r, 'name'); track e.code) {
+              <span class="err"><st-icon name="alert" [size]="12" />{{ errorText(e) }}</span>
+            }
+          </td>
+          <td>
+            {{ r.row.values.email }}
+            @for (e of errorsFor(r, 'email'); track e.code) {
+              <span class="err"><st-icon name="alert" [size]="12" />{{ errorText(e) }}: {{ e.value }}</span>
+            }
+          </td>
+          <td>{{ r.row.values.group }}</td>
+          <td>
+            {{ r.row.values.rsvp ? rsvp[r.row.values.rsvp] : '' }}
+            @for (e of errorsFor(r, 'rsvp'); track e.code) {
+              <span class="err"><st-icon name="alert" [size]="12" />{{ errorText(e) }}</span>
+            }
+          </td>
+          <td class="nowrap">
+            {{ r.row.values.meal ? meal[r.row.values.meal] : '' }}
+            @for (e of errorsFor(r, 'meal'); track e.code) {
+              <span class="err"><st-icon name="alert" [size]="12" />{{ errorText(e) }}</span>
+            }
+          </td>
+          <td>
+            <st-pill [tone]="status[r.status].tone">{{ status[r.status].label }}</st-pill>
+          </td>
+          <td class="outcome">
+            @if (r.duplicate) {
+              <st-segmented
+                [aria-label]="decisionLabel(r)"
+                [options]="decisions"
+                [value]="r.decision"
+                (valueChange)="$event && wizard.decide(r.index, $event)"
+              />
+              <span class="hint">{{ hint(r) }}</span>
+            } @else {
+              <span [class.skip]="r.outcome !== 'new'">{{ outcome(r) }}</span>
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="8" class="empty" i18n="@@import.noneHere">Nothing here. Every row is fine.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<div class="nav">
+  <button type="button" stButton variant="ghost" (click)="wizard.goTo('map')">
+    <st-icon name="chevron-left" />
+    <span i18n="@@import.back2">Back</span>
+  </button>
+  <button type="button" stButton variant="primary" [disabled]="importCount() === 0" (click)="wizard.run()">
+    <st-icon name="upload" />
+    <span>{{ importLabel() }}</span>
+  </button>
+</div>

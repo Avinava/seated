@@ -1,6 +1,10 @@
 // Global kit styles: fonts, tokens, a small reset and the shared roles every
 // component relies on. Components style themselves; nothing here targets them.
+@use '@angular/cdk';
 @use '../tokens/tokens.g';
+
+// The CDK live announcer and other visually hidden helpers.
+@include cdk.a11y-visually-hidden();
 
 *,
 *::before,

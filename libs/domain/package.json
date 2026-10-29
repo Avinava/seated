@@ -1,0 +1,6 @@
+{
+  "name": "@seated/domain",
+  "private": true,
+  "type": "module",
+  "sideEffects": false
+}

@@ -17,6 +17,7 @@
     "module": "preserve",
     "paths": {
       "@seated/domain": ["./libs/domain/src/index.ts"],
+      "@seated/domain/*": ["./libs/domain/src/*/index.ts"],
       "@seated/kit": ["./libs/kit/src/public-api.ts"]
     }
   },

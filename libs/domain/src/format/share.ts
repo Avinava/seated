@@ -12,8 +12,16 @@ export interface SharePayload {
   readonly date: string;
   readonly venue: string;
   readonly city: string;
-  readonly tables: readonly { readonly label: string; readonly shape: TableShape }[];
+  /** `seats` lets the guest page draw the whole table; links made before it was added leave it out. */
+  readonly tables: readonly { readonly label: string; readonly shape: TableShape; readonly seats?: number }[];
   readonly guests: readonly { readonly name: string; readonly table: string; readonly seat: number }[];
+  /** False when the hosts chose to hide tablemates. Absent means shown, so older links read the same. */
+  readonly tablemates?: boolean;
+}
+
+export interface ShareOptions {
+  /** Let guests see who else is at their table. Defaults to true. */
+  readonly tablemates?: boolean;
 }
 
 export type ShareErrorCode = 'bad-encoding' | 'unsupported-version' | 'corrupt' | 'invalid-payload';
@@ -25,15 +33,16 @@ export class ShareDecodeError extends Error {
   }
 }
 
-export function toSharePayload(event: SeatingEvent): SharePayload {
+export function toSharePayload(event: SeatingEvent, options: ShareOptions = {}): SharePayload {
   const label = new Map(event.tables.map((t) => [t.id, t.label]));
   return {
+    ...(options.tablemates === false && { tablemates: false }),
     v: SHARE_VERSION,
     name: event.name,
     date: event.date,
     venue: event.venue,
     city: event.city,
-    tables: event.tables.map((t) => ({ label: t.label, shape: t.shape })),
+    tables: event.tables.map((t) => ({ label: t.label, shape: t.shape, seats: t.seats })),
     guests: event.guests.flatMap((g) => {
       const table = g.seat ? label.get(g.seat.tableId) : undefined;
       return g.seat && table !== undefined ? [{ name: g.name, table, seat: g.seat.index }] : [];
@@ -45,8 +54,9 @@ async function pipe(
   bytes: Uint8Array<ArrayBuffer>,
   stream: CompressionStream | DecompressionStream,
 ): Promise<Uint8Array<ArrayBuffer>> {
-  const out = new Blob([bytes]).stream().pipeThrough(stream);
-  return new Uint8Array(await new Response(out).arrayBuffer());
+  // Response rather than Blob#stream: it turns bytes into a stream in browsers, Node and jsdom alike.
+  const source = new Response(bytes).body ?? new ReadableStream();
+  return new Uint8Array(await new Response(source.pipeThrough(stream)).arrayBuffer());
 }
 
 export function toBase64Url(bytes: Uint8Array): string {
@@ -68,8 +78,8 @@ export function fromBase64Url(text: string): Uint8Array<ArrayBuffer> {
 }
 
 /** Encode a share link token: one version byte, then deflate-raw JSON, all base64url. */
-export async function encodeShare(event: SeatingEvent): Promise<string> {
-  const json = new TextEncoder().encode(JSON.stringify(toSharePayload(event)));
+export async function encodeShare(event: SeatingEvent, options: ShareOptions = {}): Promise<string> {
+  const json = new TextEncoder().encode(JSON.stringify(toSharePayload(event, options)));
   const packed = await pipe(json, new CompressionStream('deflate-raw'));
   const out = new Uint8Array(packed.length + 1);
   out[0] = SHARE_VERSION;
@@ -100,8 +110,15 @@ function isSharePayload(v: unknown): v is SharePayload {
   return (
     p['v'] === SHARE_VERSION &&
     ['name', 'date', 'venue', 'city'].every((k) => str(p[k])) &&
+    (p['tablemates'] === undefined || typeof p['tablemates'] === 'boolean') &&
     Array.isArray(p['tables']) &&
-    p['tables'].every((t) => rec(t) && str(t['label']) && ['round', 'long', 'head'].includes(t['shape'] as string)) &&
+    p['tables'].every(
+      (t) =>
+        rec(t) &&
+        str(t['label']) &&
+        ['round', 'long', 'head'].includes(t['shape'] as string) &&
+        (t['seats'] === undefined || (Number.isInteger(t['seats']) && (t['seats'] as number) > 0)),
+    ) &&
     Array.isArray(p['guests']) &&
     p['guests'].every(
       (g) =>

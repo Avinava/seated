@@ -1,0 +1,136 @@
+:host {
+  display: grid;
+  gap: var(--st-space-6);
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--st-space-4);
+  padding-bottom: var(--st-space-4);
+  border-bottom: 2px solid var(--st-text);
+}
+
+.title {
+  font-size: var(--st-fs-2xl);
+}
+
+.sub {
+  margin-top: var(--st-space-1);
+  color: var(--st-text-2);
+}
+
+.totals {
+  display: flex;
+  gap: var(--st-space-5);
+  margin: 0;
+}
+
+.totals div {
+  display: grid;
+  justify-items: end;
+}
+
+.totals dt {
+  color: var(--st-text-3);
+  font-size: var(--st-fs-xs);
+}
+
+.totals dd {
+  margin: 0;
+  font-size: var(--st-fs-xl);
+  font-weight: 600;
+}
+
+.tables {
+  columns: 3 220px;
+  column-gap: var(--st-space-6);
+}
+
+.block {
+  display: grid;
+  gap: var(--st-space-1);
+  margin-bottom: var(--st-space-6);
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.block-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: var(--st-space-1);
+  border-bottom: 1px solid var(--st-line-2);
+  font-size: var(--st-fs-base);
+}
+
+.fill {
+  color: var(--st-text-3);
+  font-size: var(--st-fs-xs);
+  font-weight: 400;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--st-fs-md);
+}
+
+td {
+  padding: 3px 0;
+  border-bottom: 1px solid var(--st-line);
+  vertical-align: baseline;
+}
+
+.n {
+  width: 2.5ch;
+  padding-right: var(--st-space-2);
+  color: var(--st-text-3);
+  font-size: var(--st-fs-xs);
+  text-align: right;
+}
+
+.meal {
+  padding-left: var(--st-space-2);
+  color: var(--st-text-2);
+  font-size: var(--st-fs-sm);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.empty td {
+  color: var(--st-text-3);
+  font-style: italic;
+}
+
+.meals {
+  padding-top: var(--st-space-1);
+  color: var(--st-text-2);
+}
+
+@media print {
+  .summary {
+    border-color: black;
+  }
+
+  .sub,
+  .totals dt,
+  .fill,
+  .n,
+  .meal,
+  .meals,
+  .empty td {
+    color: black;
+  }
+
+  td,
+  .block-head {
+    border-color: black;
+  }
+
+  .tables {
+    columns: 3;
+  }
+}

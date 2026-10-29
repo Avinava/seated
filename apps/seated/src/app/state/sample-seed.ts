@@ -1,5 +1,4 @@
 import { Injectable, inject } from '@angular/core';
-import { createSampleEvents } from '@seated/domain';
 import { CLOCK } from '../core/clock';
 import { EventRepository } from '../core/storage/event-repository';
 
@@ -23,6 +22,7 @@ export class SampleSeed {
 
   private async seed(): Promise<void> {
     if (seeded() || (await this.repo.list()).length > 0) return;
+    const { createSampleEvents } = await import('@seated/domain/sample');
     await Promise.all(createSampleEvents(this.clock()).map((e) => this.repo.put(e)));
     markSeeded();
   }

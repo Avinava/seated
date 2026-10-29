@@ -1,0 +1,112 @@
+<st-brand-section
+  id="controls"
+  num="05"
+  heading="Controls"
+  i18n-heading="@@brand.controls"
+  intro="Every control is a real button, input or switch with a visible label or an accessible name. Try them: they work."
+  i18n-intro="@@brand.controlsIntro"
+>
+  <div class="grid">
+    <section class="cell" aria-labelledby="brand-buttons">
+      <h3 class="st-mono" id="brand-buttons" i18n="@@brand.buttons">Buttons</h3>
+      <div class="row">
+        <button type="button" stButton variant="primary" i18n="@@brand.btnPrimary">Auto-seat</button>
+        <button type="button" stButton i18n="@@brand.btnSecondary">Add table</button>
+        <button type="button" stButton variant="ghost" i18n="@@brand.btnGhost">Cancel</button>
+        <button type="button" stButton variant="danger" i18n="@@brand.btnDanger">Remove</button>
+      </div>
+      <div class="row">
+        <button type="button" stButton size="sm" i18n="@@brand.btnSm">Small</button>
+        <button type="button" stButton i18n="@@brand.btnMd">Medium</button>
+        <button type="button" stButton size="lg" i18n="@@brand.btnLg">Large</button>
+        <button type="button" stButton disabled i18n="@@brand.btnDisabled">Disabled</button>
+      </div>
+      <div class="row">
+        <button type="button" stIconButton icon="undo" aria-label="Undo" i18n-aria-label="@@brand.iconUndo"></button>
+        <button
+          type="button"
+          stIconButton
+          icon="zoom-in"
+          variant="secondary"
+          aria-label="Zoom in"
+          i18n-aria-label="@@brand.iconZoom"
+        ></button>
+        <button
+          type="button"
+          stIconButton
+          icon="plus"
+          variant="primary"
+          aria-label="Add guest"
+          i18n-aria-label="@@brand.iconAdd"
+        ></button>
+      </div>
+    </section>
+
+    <section class="cell" aria-labelledby="brand-labels">
+      <h3 class="st-mono" id="brand-labels" i18n="@@brand.labels">Pills, chips and avatars</h3>
+      <div class="row">
+        <st-pill tone="ok" i18n="@@brand.pillComing">Coming</st-pill>
+        <st-pill tone="warn" i18n="@@brand.pillAwaiting">Awaiting</st-pill>
+        <st-pill tone="danger" i18n="@@brand.pillDeclined">Declined</st-pill>
+        <st-pill i18n="@@brand.pillNeutral">Veg</st-pill>
+        <st-pill mono>T4 · 8/10</st-pill>
+      </div>
+      <div class="row">
+        <st-pill tone="1" i18n="@@brand.pill1">Bride's family</st-pill>
+        <st-pill tone="2" i18n="@@brand.pill2">Groom's family</st-pill>
+        <st-pill tone="3" i18n="@@brand.pill3">Friends</st-pill>
+        <st-pill tone="4" i18n="@@brand.pill4">Work</st-pill>
+      </div>
+      <div class="row">
+        @for (c of chips(); track c) {
+          <st-chip [label]="c" (removed)="removeChip(c)" />
+        }
+      </div>
+      <div class="row">
+        <st-avatar initials="KM" tone="1" size="sm" />
+        <st-avatar initials="RK" tone="2" />
+        <st-avatar initials="DM" tone="3" size="lg" />
+      </div>
+    </section>
+
+    <section class="cell" aria-labelledby="brand-forms">
+      <h3 class="st-mono" id="brand-forms" i18n="@@brand.forms">Forms</h3>
+      <st-field
+        label="Full name"
+        i18n-label="@@brand.fieldName"
+        hint="As it should appear on the place card"
+        i18n-hint="@@brand.fieldHint"
+        required
+      >
+        <input stInput value="Kamla Mehta" />
+      </st-field>
+      <st-field
+        label="Email"
+        i18n-label="@@brand.fieldEmail"
+        error="Email does not look right"
+        i18n-error="@@brand.fieldError"
+      >
+        <input stInput value="tejas.bhosale@example" />
+      </st-field>
+      <st-segmented aria-label="View" i18n-aria-label="@@brand.viewLabel" [options]="views" [(value)]="view" />
+      <st-switch [(checked)]="on"><span i18n="@@brand.switch">Show seat numbers</span></st-switch>
+      <st-checkbox [(checked)]="checked"><span i18n="@@brand.checkbox">Needs step-free access</span></st-checkbox>
+    </section>
+
+    <section class="cell" aria-labelledby="brand-data">
+      <h3 class="st-mono" id="brand-data" i18n="@@brand.data">Numbers</h3>
+      <div class="stats">
+        <st-stat
+          label="Seated"
+          i18n-label="@@brand.statSeated"
+          value="84 / 104"
+          caption="20 to go"
+          i18n-caption="@@brand.statCaption"
+        />
+        <st-progress-ring [value]="81" label="Seated" i18n-label="@@brand.ringLabel" />
+      </div>
+      <st-bar [value]="8" [max]="10" label="T4, 8 of 10 seats" i18n-label="@@brand.bar" tone="accent" />
+      <st-bar [value]="10" [max]="10" label="T5, full" i18n-label="@@brand.barFull" tone="warn" />
+    </section>
+  </div>
+</st-brand-section>

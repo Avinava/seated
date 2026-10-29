@@ -1,0 +1,80 @@
+@if (event(); as e) {
+  <div class="page">
+    <header class="head">
+      <p class="eyebrow st-mono" i18n="@@share.eyebrow">Guest page</p>
+      <h1 class="title st-display" i18n="@@share.title">Find your seat</h1>
+      <p class="lede" i18n="@@share.lede">
+        A read-only page for guests, no account needed. They type their name and see their table, with their seat lit.
+        It opens offline once loaded, so a weak signal at the venue is fine.
+      </p>
+    </header>
+
+    <div class="grid">
+      <div class="controls">
+        <st-card padding="lg">
+          <div class="stack">
+            <div class="link-head">
+              <h2 class="section-title" id="share-link-label" i18n="@@share.linkTitle">Link</h2>
+              <span class="st-mono st-muted" i18n="@@share.linkMeta">{{ seatedText() }} seated guests</span>
+            </div>
+            <div class="link-row">
+              @if (link(); as url) {
+                <input
+                  #linkInput
+                  class="link st-num"
+                  readonly
+                  aria-labelledby="share-link-label"
+                  [value]="url"
+                  (focus)="linkInput.select()"
+                />
+                <button type="button" stButton variant="primary" (click)="copy(linkInput)">
+                  <st-icon name="link" />
+                  <span i18n="@@share.copy">Copy link</span>
+                </button>
+              } @else {
+                <st-skeleton shape="block" height="36px" />
+                <span class="st-sr-only" i18n="@@share.building">Building the link</span>
+              }
+            </div>
+            @if (link(); as url) {
+              <a class="open" [href]="url" target="_blank" rel="noopener" i18n="@@share.open"
+                >Open the guest page in a new tab</a
+              >
+            }
+
+            <div class="switch-row">
+              <st-switch [(checked)]="tablemates">
+                <span class="switch-text">
+                  <span i18n="@@share.mates">Show tablemates</span>
+                  <span class="switch-hint" i18n="@@share.matesHint">Names of the others at the same table</span>
+                </span>
+              </st-switch>
+            </div>
+
+            <p class="privacy">
+              <st-icon name="info" />
+              <span i18n="@@share.privacy">The link carries names and tables only. No emails, meals or notes.</span>
+            </p>
+          </div>
+        </st-card>
+
+        @if (link(); as url) {
+          @defer (on viewport) {
+            <st-qr-card [link]="url" [eventName]="e.name" [fileName]="qrFile()" />
+          } @placeholder {
+            <st-skeleton shape="block" height="260px" />
+          }
+        }
+      </div>
+
+      <div class="preview">
+        <p class="preview-label st-mono" i18n="@@share.previewLabel">Live preview</p>
+        @if (payload(); as p) {
+          <st-phone-frame label="Preview of the guest page" i18n-label="@@share.previewRegion">
+            <st-find-seat-view [payload]="p" [headingLevel]="2" />
+          </st-phone-frame>
+        }
+      </div>
+    </div>
+  </div>
+}

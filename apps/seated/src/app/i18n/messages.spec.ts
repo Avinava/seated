@@ -14,7 +14,7 @@ describe('messages', () => {
 
   it.each([
     [{ kind: 'apart', names: ['Dev Malhotra', 'Rohan Kapoor'] }, 'Keep Dev Malhotra and Rohan Kapoor apart'],
-    [{ kind: 'together', names: [], partyLabel: 'The Mehtas' }, 'Keep The Mehtas together'],
+    [{ kind: 'together', names: [], partyLabel: 'The Mehtas' }, 'Keep the Mehtas together'],
     [{ kind: 'near-exit', names: ['Kamla Mehta'] }, 'Seat Kamla Mehta near the exit'],
     [{ kind: 'capacity', names: [], tableLabel: 'T3', seats: 10 }, 'T3 seats 10'],
   ] as const)('titles %o', (d, text) => {
