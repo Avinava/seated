@@ -1,0 +1,23 @@
+[tools]
+node = "24.22.2"
+pnpm = "10.34.6"
+
+[tasks.gen]
+description = "Regenerate kit tokens from design/tokens.json"
+run = "pnpm exec tsx tools/gen-tokens.ts"
+
+[tasks.gate]
+description = "Everything that must pass before a commit"
+run = "tools/gate.sh"
+
+[tasks.app]
+description = "Serve the app at http://localhost:4200"
+run = "pnpm exec ng serve seated"
+
+[tasks.test]
+description = "Domain, kit and app unit tests"
+run = [
+  "pnpm exec vitest run --config libs/domain/vitest.config.ts",
+  "pnpm exec ng test kit --watch=false",
+  "pnpm exec ng test seated --watch=false",
+]
