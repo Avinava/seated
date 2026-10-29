@@ -6,7 +6,7 @@ import { settle } from './frames';
  * The README screen recording: drag a party onto a seat, see the conflict,
  * fix it from the keyboard, auto-seat, undo, redo. Playwright records the
  * video (project `record`, 1280x800); tools/record.sh turns it into
- * docs/media/seating.mp4 and seating.gif. The pauses are pacing for people
+ * docs/media/seating.mp4 and seating.webp. The pauses are pacing for people
  * watching, not waits for the app: every step still asserts its outcome.
  */
 const RAW = 'test-results/record/seating.webm';

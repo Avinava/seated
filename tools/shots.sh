@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Renders the README frames (e2e/shots/frames.ts) into docs/screenshots at 2x,
-# then shrinks them with pngquant when it is installed (lossy palette
+# Renders the README frames (e2e/shots/frames.ts) into docs/screenshots at 2x
+# (the social preview at 1x), then shrinks them with pngquant when it is installed (lossy palette
 # quantisation, visually identical for flat UI; files stay plain PNG).
 set -euo pipefail
 cd "$(dirname "$0")/.."
