@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import type { Meta, StoryObj } from '@storybook/angular';
+import type { Meta, StoryObj } from '@storybook/angular-vite';
 import { type TableShape, type Tone } from '@seated/domain';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { StIconButton } from '../../actions/icon-button/icon-button';

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/angular';
+import type { Meta, StoryObj } from '@storybook/angular-vite';
 import { expect } from 'storybook/test';
 import { StSkeleton } from './skeleton';
 

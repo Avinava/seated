@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/angular';
+import type { Meta, StoryObj } from '@storybook/angular-vite';
 import { expect, userEvent, within } from 'storybook/test';
 import { StSegmented, type SegmentedOption } from './segmented';
 

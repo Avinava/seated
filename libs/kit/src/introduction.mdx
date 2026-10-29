@@ -21,11 +21,11 @@ The design kit behind Seated, an event seating planner. Standalone, zoneless Ang
 
 ## Testing
 
-Each component has a Vitest spec (`pnpm exec ng test kit`). Each story's `play` function is an interaction test, and
-the test runner scans every story with axe in both themes:
+Each component has a Vitest spec (`pnpm exec ng test kit`). Every story is also a Vitest test in headless Chromium:
+its `play` function runs, then axe scans it, once in light and once in dark. Run them all with:
 
 ```sh
-pnpm run build-storybook
-pnpm run serve-storybook   # in another terminal
 pnpm run test-storybook
 ```
+
+The Testing widget in the Storybook sidebar runs the same tests in light.

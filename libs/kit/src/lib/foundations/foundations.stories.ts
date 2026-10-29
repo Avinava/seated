@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import type { Meta, StoryObj } from '@storybook/angular';
+import type { Meta, StoryObj } from '@storybook/angular-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { StSeat } from '../seating/seat/seat';
 import { COLOR_TOKENS, RADII, TYPE_SCALE } from '../../tokens/tokens.g';

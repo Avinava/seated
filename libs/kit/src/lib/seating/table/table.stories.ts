@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/angular';
+import type { Meta, StoryObj } from '@storybook/angular-vite';
 import { type TableShape, type Tone } from '@seated/domain';
 import { expect, fn, userEvent, within } from 'storybook/test';
 import { type SeatView } from '../seat/seat';

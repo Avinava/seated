@@ -1,5 +1,5 @@
 import '@angular/localize/init';
-import type { Decorator, Preview } from '@storybook/angular';
+import type { Decorator, Preview } from '@storybook/angular-vite';
 
 type Theme = 'system' | 'light' | 'dark';
 type Motion = 'full' | 'reduce';
@@ -61,8 +61,11 @@ const preview: Preview = {
       matchers: { color: /(background|color)$/i },
     },
     a11y: {
-      // Violations fail the interaction run (see test-runner.ts), not just the panel.
+      // Violations fail the story's Vitest run (see vitest.config.ts at the root), not just the panel.
       test: 'error',
+      options: {
+        runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] },
+      },
     },
     options: {
       storySort: {

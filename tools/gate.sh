@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Everything that must pass before a commit. CI runs exactly this.
+# Everything that must pass before a commit. CI runs exactly this, with the kit
+# visual step moved to its own job (SKIP_VISUAL=1 here).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -35,16 +36,10 @@ step 'kit and app unit tests'
 pnpm exec ng test kit --watch=false
 pnpm exec ng test seated --watch=false
 
+# Vitest runs every story (play function, then axe) in Chromium, once per theme.
 step 'Storybook build, interaction and axe tests'
 pnpm exec ng run kit:build-storybook --quiet
-pnpm exec http-server storybook-static -a 127.0.0.1 -p 6006 -s &
-server=$!
-trap 'kill $server 2>/dev/null || true' EXIT
-pnpm exec wait-on -t 30000 http-get://127.0.0.1:6006/index.json
-pnpm run test-storybook --maxWorkers=4
-kill $server 2>/dev/null || true
-wait $server 2>/dev/null || true
-trap - EXIT
+pnpm run test-storybook
 
 step 'production build with budgets'
 pnpm exec ng build seated

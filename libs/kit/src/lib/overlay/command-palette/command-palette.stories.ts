@@ -1,5 +1,5 @@
 import { signal } from '@angular/core';
-import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular';
+import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular-vite';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 import { StButton } from '../../actions/button/button';
 import { StKbd } from '../../actions/kbd/kbd';
@@ -94,7 +94,8 @@ export const NoResults: Story = {
     const canvas = within(canvasElement);
     const input = await canvas.findByRole('combobox');
     await userEvent.type(input, 'qwerty');
-    await expect(await canvas.findByText('No matches for "qwerty"')).toBeVisible();
+    // The panel fades in from transparent, so wait for it to settle.
+    await waitFor(() => expect(canvas.getByText('No matches for "qwerty"')).toBeVisible());
     await expect(input).not.toHaveAttribute('aria-activedescendant');
     await userEvent.keyboard('{Escape}');
     await waitFor(() => expect(canvas.queryByRole('dialog')).toBeNull());

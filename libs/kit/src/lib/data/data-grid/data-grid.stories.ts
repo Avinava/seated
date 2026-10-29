@@ -7,7 +7,7 @@ import {
   numberAttribute,
   signal,
 } from '@angular/core';
-import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular';
+import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { StButton } from '../../actions/button/button';
 import { StIcon } from '../../icons/icon/icon';

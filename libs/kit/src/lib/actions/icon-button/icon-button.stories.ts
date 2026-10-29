@@ -1,14 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/angular';
+import type { Meta, StoryObj } from '@storybook/angular-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 import { ICON_NAMES } from '../../icons/icon/icons';
 import { StIconButton } from './icon-button';
 
-type Args = Pick<StIconButton, 'variant' | 'size'> & { icon: string; label: string; onClick: () => void };
+// `ariaLabel`, not `label`: an arg named like a component field that is not an input
+// (`label` is the field behind `aria-label`) is assigned over the signal.
+type Args = Pick<StIconButton, 'variant' | 'size'> & { icon: string; ariaLabel: string; onClick: () => void };
 
 const meta: Meta<Args> = {
   title: 'Actions/Icon button',
   component: StIconButton,
-  args: { icon: 'undo', label: 'Undo', variant: 'ghost', size: 'md', onClick: fn() },
+  args: { icon: 'undo', ariaLabel: 'Undo', variant: 'ghost', size: 'md', onClick: fn() },
   argTypes: {
     icon: { control: 'select', options: ICON_NAMES },
     variant: { control: 'inline-radio', options: ['ghost', 'secondary', 'primary'] },
@@ -17,7 +19,7 @@ const meta: Meta<Args> = {
   },
   render: (args) => ({
     props: args,
-    template: `<button stIconButton [icon]="icon" [aria-label]="label" [variant]="variant" [size]="size" (click)="onClick()"></button>`,
+    template: `<button stIconButton [icon]="icon" [aria-label]="ariaLabel" [variant]="variant" [size]="size" (click)="onClick()"></button>`,
   }),
 };
 export default meta;
@@ -32,7 +34,7 @@ export const Ghost: Story = {
   },
 };
 
-export const Secondary: Story = { args: { variant: 'secondary', icon: 'more', label: 'More actions' } };
+export const Secondary: Story = { args: { variant: 'secondary', icon: 'more', ariaLabel: 'More actions' } };
 
 export const Toolbar: Story = {
   render: () => ({

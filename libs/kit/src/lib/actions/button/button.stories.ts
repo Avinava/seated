@@ -1,4 +1,4 @@
-import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular';
+import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 import { StIcon } from '../../icons/icon/icon';
 import { StButton } from './button';

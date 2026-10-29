@@ -50,6 +50,10 @@ run = "pnpm exec tsx tools/lighthouse.ts"
 description = "Open the design kit (Storybook) at http://localhost:6006"
 run = "pnpm exec ng run kit:storybook"
 
+[tasks.kit-test]
+description = "Every kit story in Vitest browser mode: play function, then axe, in light and dark"
+run = "pnpm run test-storybook"
+
 [tasks.site]
 description = "Build the app and Storybook for GitHub Pages into dist/site (BASE=/seated/ for a project site)"
 run = "tools/build-site.sh"

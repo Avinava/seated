@@ -1,4 +1,4 @@
-import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular';
+import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular-vite';
 import { expect, within } from 'storybook/test';
 import { StFloor } from '../floor/floor';
 import { StFloorZone } from './floor-zone';
