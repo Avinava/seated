@@ -6,7 +6,17 @@ import angular from 'angular-eslint';
 
 export default defineConfig(
   {
-    ignores: ['dist/**', 'coverage/**', 'storybook-static/**', '**/*.g.ts', 'test-results/**', 'playwright-report/**'],
+    ignores: [
+      'dist/**',
+      'coverage/**',
+      'storybook-static/**',
+      '**/*.g.ts',
+      'test-results/**',
+      'test-results-visual/**',
+      'playwright-report/**',
+      'blob-report/**',
+      '.lighthouseci/**',
+    ],
   },
   {
     files: ['**/*.ts'],

@@ -38,6 +38,8 @@ yarn-error.log
 testem.log
 /typings
 __screenshots__/
+# Kit visual baselines are rendered in the pinned Playwright image and committed.
+!/e2e/visual/__screenshots__/
 
 # System files
 .DS_Store
@@ -46,6 +48,7 @@ Thumbs.db
 # Tests and catalog output
 /storybook-static
 /test-results
+/test-results-visual
 /playwright-report
 /blob-report
 /.lighthouseci

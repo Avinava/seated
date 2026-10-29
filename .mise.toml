@@ -21,3 +21,35 @@ run = [
   "pnpm exec ng test kit --watch=false",
   "pnpm exec ng test seated --watch=false",
 ]
+
+[tasks.e2e]
+description = "Playwright flows and the axe sweep against the production build"
+run = "pnpm exec playwright test --project=flows"
+
+[tasks.shots]
+description = "Render the README frames into docs/screenshots (see design/README.md)"
+run = "tools/shots.sh"
+
+[tasks.record]
+description = "Record the README clip into docs/media (needs ffmpeg)"
+run = "tools/record.sh"
+
+[tasks.visual]
+description = "Kit visual regression in the pinned Playwright Docker image"
+run = "tools/visual.sh"
+
+[tasks.visual-update]
+description = "Refresh the kit visual baselines in Docker"
+run = "tools/visual.sh --update"
+
+[tasks.lighthouse]
+description = "Lighthouse scores and budgets for the prerendered pages"
+run = "pnpm exec tsx tools/lighthouse.ts"
+
+[tasks.kit]
+description = "Open the design kit (Storybook) at http://localhost:6006"
+run = "pnpm exec ng run kit:storybook"
+
+[tasks.site]
+description = "Build the app and Storybook for GitHub Pages into dist/site (BASE=/seated/ for a project site)"
+run = "tools/build-site.sh"

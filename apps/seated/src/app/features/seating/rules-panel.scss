@@ -46,6 +46,12 @@ section {
   &[data-status='conflict'] {
     border-color: color-mix(in oklch, var(--st-danger) 35%, transparent);
     background: var(--st-danger-soft);
+
+    // The tinted card is darker than a surface in dark mode, so quiet text steps up a level to keep 4.5:1.
+    .kind,
+    .detail {
+      color: var(--st-text-2);
+    }
   }
 
   &.is-active {
