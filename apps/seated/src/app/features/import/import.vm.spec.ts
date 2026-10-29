@@ -25,11 +25,11 @@ import {
 } from './import.vm';
 
 const rows = [
-  ['Asha', '', 'a@x.in'],
+  ['Asha', '', 'a@example.com'],
   ['', '', ''],
-  ['Bina', 'x', 'b@x.in'],
+  ['Bina', 'x', 'b@example.com'],
   ['Chetan', '', ''],
-  ['Dev', '', 'd@x.in'],
+  ['Dev', '', 'd@example.com'],
 ];
 
 function row(index: number, name: string, errors: ImportRow['errors'] = []): ImportRow {
@@ -53,7 +53,7 @@ describe('import vm', () => {
   it.each([
     [0, 3, ['Asha', 'Bina', 'Chetan']],
     [1, 3, ['x']],
-    [2, 2, ['a@x.in', 'b@x.in']],
+    [2, 2, ['a@example.com', 'b@example.com']],
     [null, 3, []],
     [9, 3, []],
   ])('previews column %s', (column, n, values) => {

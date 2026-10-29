@@ -119,11 +119,11 @@ describe('normalizers', () => {
   });
 
   it.each([
-    ['a@b.co', true],
-    ['a.b@c.d.in', true],
+    ['a@b.invalid', true],
+    ['a.b@c.d.invalid', true],
     ['a@b', false],
-    ['a b@c.de', false],
-    ['@b.co', false],
+    ['a b@d.invalid', false],
+    ['@b.invalid', false],
   ])('isEmail(%s) is %s', (raw, expected) => {
     expect(isEmail(raw)).toBe(expected);
   });
@@ -139,7 +139,7 @@ describe('validateRows', () => {
 
   it('normalizes values and leaves out what the file does not say', () => {
     const [row] = validateRows(
-      [[' Asha   Rao ', 'ASHA@X.IN', 'The Raos', 'Family', 'yes', 'Vegetarian', 'No nuts', 'VIP; kids', 'yes', 'hi']],
+      [[' Asha   Rao ', 'ASHA@EXAMPLE.COM', 'The Raos', 'Family', 'yes', 'Vegetarian', 'No nuts', 'VIP; kids', 'yes', 'hi']],
       mapping,
     );
     expect(row).toEqual({
@@ -147,7 +147,7 @@ describe('validateRows', () => {
       errors: [],
       values: {
         name: 'Asha Rao',
-        email: 'asha@x.in',
+        email: 'asha@example.com',
         party: 'The Raos',
         group: 'Family',
         rsvp: 'accepted',
@@ -162,7 +162,7 @@ describe('validateRows', () => {
   });
 
   it.each([
-    [['', 'a@b.co'], [['name', 'missing-name']]],
+    [['', 'a@b.invalid'], [['name', 'missing-name']]],
     [['A', 'nope'], [['email', 'bad-email']]],
     [['A', '', '', '', 'perhaps'], [['rsvp', 'unknown-rsvp']]],
     [['A', '', '', '', '', 'fish fry'], [['meal', 'unknown-meal']]],
@@ -184,7 +184,7 @@ describe('validateRows', () => {
 
   it('treats unmapped fields as empty', () => {
     const none = suggestMapping(['Name']);
-    expect(validateRows([['A', 'b@c.de']], none)[0]?.values).toEqual({ name: 'A' });
+    expect(validateRows([['A', 'b@d.invalid']], none)[0]?.values).toEqual({ name: 'A' });
   });
 });
 
@@ -198,7 +198,7 @@ describe('findDuplicates and applyImport', () => {
     guests: [
       guest('a', {
         name: 'Asha Rao',
-        email: 'asha@x.in',
+        email: 'asha@example.com',
         partyId: 'p1',
         tags: ['vip'],
         seat: { tableId: 't1', index: 0 },
@@ -209,10 +209,10 @@ describe('findDuplicates and applyImport', () => {
   const mapping = suggestMapping(['Name', 'Email', 'Party', 'Group', 'RSVP', 'Meal', 'Tags', 'Access']);
   const rows = validateRows(
     [
-      ['Someone Else', 'ASHA@x.in', '', '', 'no', '', 'kids'], // 0: email dupe of a
+      ['Someone Else', 'ASHA@example.com', '', '', 'no', '', 'kids'], // 0: email dupe of a
       ['bina  shah', '', '', 'Friends'], // 1: name dupe of b
-      ['Chetan Rao', 'c@x.in', 'the raos', 'Cousins', 'yes', 'jain', '', 'yes'], // 2: new, existing party, new group
-      ['', 'd@x.in'], // 3: no name
+      ['Chetan Rao', 'c@example.com', 'the raos', 'Cousins', 'yes', 'jain', '', 'yes'], // 2: new, existing party, new group
+      ['', 'd@example.com'], // 3: no name
       ['Dev', 'bad', 'The Devs', 'cousins'], // 4: new party, reuses the new group
     ],
     mapping,

@@ -218,7 +218,7 @@ describe('share links', () => {
     guests: [
       seated('a', 't1', 0, {
         name: 'Asha',
-        email: 'asha@private.in',
+        email: 'asha@private.invalid',
         notes: 'secret',
         meal: 'jain',
         dietary: 'No nuts',
