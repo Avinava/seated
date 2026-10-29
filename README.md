@@ -23,7 +23,7 @@ A seating plan is a puzzle with people in it. Households want to sit together, t
 
 Seated keeps the guest list, the floor plan and those rules in one place. Drag a family onto a table and the whole family moves. Break a rule and the plan says which one, and why. Ask it to fill the empty seats and it does, explains what it did, and lets you undo the lot. When the plan is done, guests get a link where they type their name and see their table, and the venue gets place cards and a table list.
 
-<img src="docs/media/seating.gif" alt="Dragging a household onto a long table, finding a keep-apart conflict, fixing it from the keyboard, running auto-seat, then undo and redo." width="100%">
+<img src="docs/media/seating.webp" alt="Dragging a household onto a long table, finding a keep-apart conflict, fixing it from the keyboard, running auto-seat, then undo and redo." width="100%">
 
 ## Screens
 
@@ -74,7 +74,7 @@ Every image below is rendered from the production build by `mise run shots`, wit
 - **A rules engine and a solver with no framework in them.** [`libs/domain`](libs/domain/src) is plain TypeScript: [`evaluate`](libs/domain/src/rules/evaluate.ts) reports every rule as met, waiting or in conflict, and [`autoSeat`](libs/domain/src/solver/auto-seat.ts) fills seats without breaking any of them, then explains each decision. Both return codes, not sentences; the app words them with `$localize` in [`messages.ts`](apps/seated/src/app/i18n/messages.ts). 350 table-driven tests and property checks across seeds hold the domain at 98% line coverage. See [`docs/rules-and-solver.md`](docs/rules-and-solver.md).
 - **Forms that check what matters.** The [guest form](apps/seated/src/app/features/guests/guest-form.ts) is a typed reactive form with a dynamic list of plus-ones, a cross-field rule (an "Other" meal needs a note) and a debounced async check for duplicate emails. Saving it is one command, so one Undo reverts the guest, their plus-ones and their access rule together.
 - **A design system with a token pipeline.** [`design/tokens.json`](design/tokens.json) holds every colour (OKLCH, light and dark), size, radius and timing; [`gen-tokens.ts`](tools/gen-tokens.ts) generates the kit's CSS variables, and the gate fails if they are stale or if the app uses a raw colour or font. The [kit](libs/kit/src/lib) has one component per folder, each with a spec and Storybook stories: a virtualised [data grid](libs/kit/src/lib/data/data-grid), a [command palette](libs/kit/src/lib/overlay/command-palette), drawers, toasts, and the [seat and table](libs/kit/src/lib/seating/table/table.ts) the floor plan is made of.
-- **Tested at every layer.** Vitest for the domain, kit and app (more than 900 tests). Storybook `play` functions run as interaction tests with an axe scan in both themes. Playwright drives the main flows (import, seat by mouse and by keyboard, conflict, auto-seat, undo, share, the palette, offline, print), runs axe on every route, and renders the screenshots above. Kit stories are pixel-compared inside a pinned Playwright image so macOS and CI agree. Lighthouse holds the public pages at 0.99 or better for performance and 1.0 for accessibility.
+- **Tested at every layer.** Vitest for the domain, kit and app (more than 900 tests). Every Storybook story also runs in Vitest browser mode: its `play` function, then an axe scan, in both themes. Playwright drives the main flows (import, seat by mouse and by keyboard, conflict, auto-seat, undo, share, the palette, offline, print), runs axe on every route, and renders the screenshots above. Kit stories are pixel-compared inside a pinned Playwright image so macOS and CI agree. Lighthouse scores the public pages 0.99 or better for performance and 1.0 for accessibility, and the gate fails a page that drops below 0.9, 1.0 and 0.95 (best practices) or goes over its size budgets.
 - **The web platform.** An installable PWA that works offline after the first visit; IndexedDB storage behind a repository interface; versioned export files with a migration table; the public pages prerendered; a share link that carries names and tables only, compressed into the URL hash; a [QR encoder](apps/seated/src/app/features/share/qr.ts) written from the spec; print styles for place cards; Indian number grouping throughout.
 
 ## Design
@@ -91,6 +91,7 @@ mise install          # Node and pnpm, pinned in .mise.toml
 pnpm install
 mise run app          # the app at http://localhost:4200
 mise run kit          # the design kit (Storybook) at http://localhost:6006
+mise run kit-test     # every story: play function and axe, light and dark
 mise run gate         # format, lint, types, unit, Storybook, e2e, visual, Lighthouse, budgets
 mise run shots        # re-render docs/screenshots
 mise run site         # app and Storybook for GitHub Pages, into dist/site

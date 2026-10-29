@@ -31,7 +31,7 @@ flowchart LR
   state --> core
 ```
 
-Layers only point down: `apps` uses `libs/kit` and `libs/domain`; `libs/kit` uses only pure geometry from `libs/domain`; `libs/domain` imports nothing. ESLint's `no-restricted-imports` enforces this per folder.
+Layers only point down: `apps` uses `libs/kit` and `libs/domain`; `libs/kit` uses only pure geometry and types from `libs/domain`; `libs/domain` imports nothing. ESLint's `no-restricted-imports` enforces this per folder.
 
 ## Domain
 
@@ -47,20 +47,20 @@ Layers only point down: `apps` uses `libs/kit` and `libs/domain`; `libs/kit` use
 
 ## Kit
 
-`libs/kit` is the design system. Tokens are generated from `design/tokens.json` into CSS custom properties (`--st-*`) for light and dark. Components are standalone, `OnPush`, signal-based and take plain view models such as `SeatView`, never domain entities. Each has a spec and Storybook stories; interactive stories carry `play` functions that run as tests with an axe scan in both themes.
+`libs/kit` is the design system. Tokens are generated from `design/tokens.json` into CSS custom properties (`--st-*`) for light and dark. Components are standalone, `OnPush`, signal-based and take plain view models such as `SeatView`, never domain entities. Each has a spec and Storybook stories; interactive stories carry `play` functions. Every story runs as a Vitest browser test (`@storybook/addon-vitest`), play function then axe scan, in both themes.
 
 ## App
 
 - **Zoneless, signals throughout.** No zone.js. State is signals and `computed`; templates use the built-in control flow.
 - **Routing.** Every screen is a lazy route. `withComponentInputBinding` binds route and query params straight to component inputs, so a filtered guest list or an open guest panel is a shareable URL.
 - **State.** `EventStore` (NgRx SignalStore) holds the open event. Feature screens keep view-only state in their own stores. Every change is a `Command` (`label` plus a pure op) run through `Actions.run`, which applies it, records it, shows a toast with Undo and announces it to screen readers.
-- **History.** `withHistory()` is a reusable SignalStore feature: `commit(label, next)`, `undo()`, `redo()`. It stores before and after snapshots, which share structure, so 100 steps cost little.
+- **History.** `withHistory()` is a reusable SignalStore feature: `commit(label, next)`, `undo()`, `redo()`. It keeps the last 100 steps as before and after snapshots, which share structure, so they cost little.
 - **Storage.** `EventRepository` is an interface with an IndexedDB implementation in the browser and an in-memory one for tests and prerendering. Saves are optimistic: the UI changes first and the write follows, with a saved indicator in the sidebar.
 - **Shortcuts.** One document listener (`Hotkeys`) with stacked bindings, so an open dialog can take Escape from the page beneath it.
 - **Command palette.** Screens register commands while they are open; the shell owns navigation, history and theme.
 
 ## Platform
 
-- **PWA.** The Angular service worker caches the app shell and fonts, so everything works offline after the first visit.
-- **Prerendering.** The landing route and the public share page are prerendered; the share page reads everything from the URL hash.
+- **PWA.** The Angular service worker prefetches the app shell, scripts and styles, and caches fonts and images as they load, so everything works offline after the first visit.
+- **Prerendering.** The landing page, the brand kit and the public share page are prerendered; the share page reads everything from the URL hash. Event screens read IndexedDB, so they render in the browser only.
 - **Locale.** The source locale is `en-IN`: dates read "Fri 18 Dec" and numbers group as 1,00,000.

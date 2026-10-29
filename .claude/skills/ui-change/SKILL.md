@@ -33,7 +33,7 @@ New or changed colours, sizes, radii or timings go in `design/tokens.json`, then
 
 ## 5. Verify
 
-1. `mise run gate` must pass (format, lint, types, unit tests, Storybook interaction and axe tests, e2e, budgets).
+1. `mise run gate` must pass (tokens, format, lint, types, unit tests, Storybook play and axe tests, build budgets, e2e, kit visual, Lighthouse). After an intended visual change to a story, refresh its baselines with `mise run visual-update` and review the diff.
 2. `mise run shots` re-renders `docs/screenshots`; open the changed PNGs and check that only the intended change moved.
 3. Look at the screen at 390px, about 860px and 1280px, in both themes, and use it with the keyboard alone.
 4. Record layout decisions in `design/README.md` and behaviour rules in `docs/design.md`.

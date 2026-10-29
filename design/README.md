@@ -1,6 +1,6 @@
 # Frames
 
-Every screen state worth showing, the route that opens it and the file it renders to. The source of truth is `e2e/shots/frames.ts`; `mise run shots` renders each frame against the production build at 2x into `docs/screenshots/<id>_<name>_<theme>.png`, then shrinks the files with `pngquant` when it is installed.
+Every screen state worth showing, the route that opens it and the file it renders to. The source of truth is `e2e/shots/frames.ts`; `mise run shots` renders each frame against the production build into `docs/screenshots/<id>_<name>_<theme>.png`, then shrinks the files with `pngquant` when it is installed.
 
 All frames use the sample events seeded on first run (seed 1), a fresh browser profile, the clock fixed at Thu 29 Oct 2026 10:00 IST, locale `en-IN` and reduced motion, except 2q, which shows motion.
 
@@ -29,7 +29,7 @@ All frames use the sample events seeded on first run (seed 1), a fresh browser p
 | Hero   | Hero           | `/events/ev-wedding/seating`            | 1600 x 1000, as 2e                                                       | `hero.png`                     |
 | Social | Social preview | `/events/ev-wedding/seating`            | 1280 x 640 at 1x, as 2e; the GitHub social preview                       | `social_preview.png`           |
 
-Desktop frames are 1440 x 900, phone frames 390 x 844, all at device scale 2.
+Desktop frames are 1440 x 900 and phone frames 390 x 844. Everything renders at device scale 2 except the social preview.
 
 ## Layout
 

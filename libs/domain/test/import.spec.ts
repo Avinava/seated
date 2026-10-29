@@ -139,7 +139,20 @@ describe('validateRows', () => {
 
   it('normalizes values and leaves out what the file does not say', () => {
     const [row] = validateRows(
-      [[' Asha   Rao ', 'ASHA@EXAMPLE.COM', 'The Raos', 'Family', 'yes', 'Vegetarian', 'No nuts', 'VIP; kids', 'yes', 'hi']],
+      [
+        [
+          ' Asha   Rao ',
+          'ASHA@EXAMPLE.COM',
+          'The Raos',
+          'Family',
+          'yes',
+          'Vegetarian',
+          'No nuts',
+          'VIP; kids',
+          'yes',
+          'hi',
+        ],
+      ],
       mapping,
     );
     expect(row).toEqual({
