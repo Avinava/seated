@@ -1,0 +1,68 @@
+<st-floor
+  class="floor"
+  [width]="plan().width"
+  [height]="plan().height"
+  [zoom]="view.effectiveZoom()"
+  [aria-label]="floorLabel()"
+>
+  @for (z of plan().zones; track $index) {
+    <st-floor-zone [kind]="z.kind" [label]="z.label" [x]="z.x" [y]="z.y" [w]="z.w" [h]="z.h" />
+  }
+  @for (t of tables(); track t.table.id) {
+    <st-table
+      [attr.data-table-id]="t.table.id"
+      [shape]="t.table.shape"
+      [seats]="t.seats"
+      [label]="t.table.label"
+      [rotation]="t.table.rotation"
+      [selected]="t.selected"
+      [conflict]="t.conflict"
+      [ariaLabel]="t.ariaLabel"
+      [x]="t.table.x"
+      [y]="t.table.y"
+      [stTableDrag]="view.effectiveZoom()"
+      (tableMoved)="tableMoved(t.table, $event)"
+      (tableActivate)="selectTable(t.table)"
+      (seatActivate)="activateSeat(t.table, $event)"
+      (seatPointerDown)="seatPointerDown(t.table, $event)"
+      (seatPointerEnter)="seatEnter(t.table, $event)"
+      (seatPointerLeave)="seatLeave()"
+      (keydown)="onKeydown(t.table, $event)"
+      (focusin)="onFocusIn(t.table, $event)"
+      (focusout)="onFocusOut($event)"
+    />
+  }
+</st-floor>
+
+<div class="zoom" role="group" aria-label="Zoom" i18n-aria-label="@@floor.zoom">
+  <button
+    stIconButton
+    icon="minus"
+    size="sm"
+    aria-label="Zoom out (minus)"
+    i18n-aria-label="@@floor.zoomOut"
+    [disabled]="view.effectiveZoom() <= zoom.min"
+    (click)="view.zoomOut()"
+  ></button>
+  <output class="pct st-mono" aria-live="polite">{{ percent() }}</output>
+  <button
+    stIconButton
+    icon="plus"
+    size="sm"
+    aria-label="Zoom in (plus)"
+    i18n-aria-label="@@floor.zoomIn"
+    [disabled]="view.effectiveZoom() >= zoom.max"
+    (click)="view.zoomIn()"
+  ></button>
+  <button
+    type="button"
+    class="fit"
+    [attr.aria-pressed]="view.fitting()"
+    (click)="view.zoomToFit()"
+    i18n-title="@@floor.fitTitle"
+    title="Fit the plan (0)"
+    i18n="@@floor.fit"
+  >
+    Fit
+  </button>
+</div>

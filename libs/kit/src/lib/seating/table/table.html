@@ -27,6 +27,7 @@
       [label]="seat.label"
       [justPlaced]="seat.justPlaced ?? false"
       [tabIndex]="i === activeSeat() ? 0 : -1"
+      [attr.data-seat-index]="i"
       [style.left.px]="box().cx + p.x - halfSeat"
       [style.top.px]="box().cy + p.y - halfSeat"
       (focus)="onSeatFocus(i)"

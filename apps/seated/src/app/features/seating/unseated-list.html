@@ -1,0 +1,98 @@
+<header class="head">
+  <h2 class="title" [class.st-sr-only]="inDrawer()">
+    <span i18n="@@unseated.title">Unseated</span>
+    <span class="count st-num" aria-hidden="true">{{ remaining() }}</span>
+    <span class="st-sr-only" i18n="@@unseated.countLabel">, {{ remaining() }} coming without a seat</span>
+  </h2>
+  <input
+    stInput
+    type="search"
+    placeholder="Find a guest"
+    i18n-placeholder="@@unseated.find"
+    aria-label="Find an unseated guest"
+    i18n-aria-label="@@unseated.findLabel"
+    [value]="view.filter()"
+    (input)="view.setFilter($any($event.target).value)"
+  />
+</header>
+
+<div class="scroll" cdkDropList cdkDropListSortingDisabled data-drop="unseated" [class.is-drop]="dropping()">
+  @if (remaining() > 0) {
+    <p class="hint" i18n="@@unseated.hint">
+      Drag a name, or a whole household, onto a seat. With a keyboard, press Enter to pick up and Enter again on a seat.
+    </p>
+  } @else if (!view.filter()) {
+    <div class="done" role="status">
+      <span class="done-mark" aria-hidden="true"><st-icon name="check" [size]="18" /></span>
+      <strong i18n="@@unseated.done">Everyone confirmed has a seat</strong>
+      <span class="done-body" i18n="@@unseated.doneBody"
+        >Next, print place cards for the venue or share the guest page.</span
+      >
+      <a stButton size="sm" [routerLink]="printLink()" i18n="@@unseated.print">Print place cards</a>
+    </div>
+  }
+
+  @for (g of groups(); track g.key; let i = $index) {
+    @if (g.pending && (i === 0 || !groups()[i - 1]?.pending)) {
+      <h3 class="section st-mono" i18n="@@unseated.awaiting">Awaiting reply</h3>
+    }
+    <div class="group" [class.is-pending]="g.pending" [class.is-party]="g.members.length > 1">
+      @if (g.members.length > 1) {
+        @let pp = partyPayload(g);
+        <button
+          type="button"
+          class="party"
+          cdkDrag
+          [attr.aria-pressed]="isHeld(pp.guestIds)"
+          (click)="toggle(pp)"
+          (cdkDragStarted)="started(pp)"
+          (cdkDragMoved)="moved($event)"
+          (cdkDragEnded)="ended($event)"
+        >
+          <span class="swatch" [attr.data-tone]="g.tone" aria-hidden="true"></span>
+          <span class="party-name"
+            >{{ g.label }}<span class="st-sr-only">{{ partySuffix(g) }}</span></span
+          >
+          <span class="party-move st-mono" aria-hidden="true" i18n="@@unseated.move">move {{ g.members.length }}</span>
+          <ng-template cdkDragPreview>
+            <span class="chip"
+              ><st-icon name="users" [size]="14" />{{ g.label
+              }}<span class="chip-n st-num">{{ g.members.length }}</span></span
+            >
+          </ng-template>
+        </button>
+      }
+      @for (m of g.members; track m.id) {
+        @let gp = guestPayload(m);
+        <button
+          type="button"
+          class="guest"
+          cdkDrag
+          [attr.data-guest-id]="m.id"
+          [attr.aria-pressed]="isHeld(gp.guestIds)"
+          [class.is-focus]="view.focusGuestId() === m.id"
+          (click)="toggle(gp)"
+          (cdkDragStarted)="started(gp)"
+          (cdkDragMoved)="moved($event)"
+          (cdkDragEnded)="ended($event)"
+        >
+          <st-avatar [initials]="initials(m.name)" [tone]="tone(m)" size="sm" />
+          <span class="name">{{ m.name }}</span>
+          @if (m.access) {
+            <st-icon name="accessibility" [size]="14" label="Needs step-free access" i18n-label="@@unseated.access" />
+          }
+          <span class="meal">{{ meal(m) }}</span>
+          <ng-template cdkDragPreview>
+            <span class="chip">{{ m.name }}<span class="chip-n st-num">1</span></span>
+          </ng-template>
+        </button>
+      }
+    </div>
+  } @empty {
+    @if (view.filter()) {
+      <p class="hint" i18n="@@unseated.noMatch">No unseated guest matches "{{ view.filter() }}".</p>
+    }
+  }
+</div>
+
+<footer class="foot">{{ footer() }}</footer>

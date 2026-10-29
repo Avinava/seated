@@ -1,0 +1,108 @@
+:host {
+  display: block;
+}
+
+section {
+  display: grid;
+  gap: var(--st-space-2);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--st-fs-base);
+  font-weight: 600;
+}
+
+.counts {
+  margin: 0;
+  font-size: var(--st-fs-2xs);
+  color: var(--st-text-3);
+}
+
+.list {
+  display: grid;
+  gap: var(--st-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rule {
+  position: relative;
+  border: 1px solid var(--st-line);
+  border-radius: var(--st-radius-lg);
+  background: var(--st-surface);
+  transition:
+    background-color var(--st-dur-base) var(--st-ease-settle),
+    border-color var(--st-dur-base) var(--st-ease-settle),
+    box-shadow var(--st-dur-base) var(--st-ease-settle);
+
+  &[data-status='conflict'] {
+    border-color: color-mix(in oklch, var(--st-danger) 35%, transparent);
+    background: var(--st-danger-soft);
+  }
+
+  &.is-active {
+    border-color: var(--st-accent);
+    box-shadow: 0 0 0 3px var(--st-accent-soft);
+  }
+}
+
+.main {
+  display: grid;
+  gap: var(--st-space-1);
+  width: 100%;
+  padding: var(--st-space-3);
+  padding-right: var(--st-space-10);
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--st-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--st-space-2);
+}
+
+.kind {
+  font-size: var(--st-fs-2xs);
+  letter-spacing: var(--st-tracking-mono);
+  text-transform: uppercase;
+  color: var(--st-text-3);
+}
+
+.text {
+  font-size: var(--st-fs-md);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.detail {
+  font-size: var(--st-fs-xs);
+  color: var(--st-text-3);
+}
+
+.remove {
+  position: absolute;
+  right: var(--st-space-2);
+  bottom: var(--st-space-2);
+}
+
+.empty {
+  padding: var(--st-space-3);
+  border: 1.5px dashed var(--st-line);
+  border-radius: var(--st-radius-lg);
+  font-size: var(--st-fs-sm);
+  color: var(--st-text-3);
+}

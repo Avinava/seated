@@ -1,0 +1,78 @@
+:host {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+}
+
+// Centre the plan in the free space; "safe" keeps an overflowing plan scrollable from its start.
+.floor {
+  display: grid;
+  place-content: safe center;
+  min-width: 0;
+  min-height: 0;
+}
+
+st-table {
+  transition:
+    left var(--st-dur-base) var(--st-ease-settle),
+    top var(--st-dur-base) var(--st-ease-settle);
+
+  &.is-dragging {
+    z-index: 1;
+    transition: none;
+    opacity: 0.92;
+  }
+}
+
+// The table top is the drag handle for moving a table.
+st-table ::ng-deep .top {
+  cursor: grab;
+}
+
+st-table.is-dragging ::ng-deep .top {
+  cursor: grabbing;
+}
+
+.zoom {
+  position: absolute;
+  right: var(--st-space-4);
+  bottom: var(--st-space-4);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--st-line);
+  border-radius: var(--st-radius-md);
+  background: var(--st-surface);
+  box-shadow: var(--st-shadow-raised);
+}
+
+.pct {
+  width: 44px;
+  text-align: center;
+  font-size: var(--st-fs-2xs);
+  color: var(--st-text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.fit {
+  height: var(--st-size-control-sm);
+  padding: 0 var(--st-space-2);
+  border: 0;
+  border-radius: var(--st-radius-sm);
+  background: transparent;
+  color: var(--st-text-2);
+  font-size: var(--st-fs-sm);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--st-surface-2);
+    color: var(--st-text);
+  }
+
+  &[aria-pressed='true'] {
+    background: var(--st-surface-3);
+    color: var(--st-text);
+  }
+}

@@ -25,7 +25,8 @@ const HALF_SEAT = GEOMETRY.seat / 2;
  * Seats form one composite widget: a single tab stop, arrow keys move between
  * seats (wrapping, clockwise on round tables), Home and End jump to the ends.
  * Pass `x` and `y` to place the table's centre on a floor; otherwise it sits
- * in flow at its own size.
+ * in flow at its own size. Each seat carries `data-seat-index`, so a drag can
+ * hit-test the seat under the pointer.
  *
  * ```html
  * <st-table shape="round" label="T3" [seats]="seatViews()" (seatActivate)="pick($event)" />

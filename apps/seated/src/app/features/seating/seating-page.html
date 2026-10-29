@@ -1,0 +1,141 @@
+<header class="bar" data-noprint>
+  <div class="heading">
+    <h1 class="title" i18n="@@seating.title">Seating</h1>
+    <span class="sub">{{ subtitle() }}</span>
+  </div>
+  <div class="progress">
+    <st-bar
+      class="meter"
+      [value]="events.seatedCount()"
+      [max]="events.comingCount()"
+      label="Guests seated"
+      i18n-label="@@seating.meter"
+    />
+    <span class="st-num seated">{{ seatedLabel() }}</span>
+  </div>
+  @if (conflicts() > 0) {
+    <st-pill tone="danger" class="conflicts">{{ conflictLabel() }}</st-pill>
+  }
+
+  <span class="spacer"></span>
+
+  @if (listCollapsed()) {
+    <button stButton size="sm" [attr.aria-expanded]="view.listOpen()" (click)="view.setListOpen(true)">
+      <st-icon name="users" />
+      <span i18n="@@seating.openList">Unseated</span>
+    </button>
+  }
+  @if (!railCollapsed()) {
+    <st-segmented
+      class="colour"
+      aria-label="Colour seats by"
+      i18n-aria-label="@@colours.by"
+      [options]="colorOptions"
+      [value]="view.colorBy()"
+      (valueChange)="$event && view.setColorBy($event)"
+    />
+  }
+  @if (railCollapsed()) {
+    <button stButton size="sm" [attr.aria-expanded]="view.railOpen()" (click)="view.setRailOpen(true)">
+      <span i18n="@@seating.openRail">Rules</span>
+      @if (conflicts() > 0) {
+        <span class="dot" aria-hidden="true"></span>
+        <span class="st-sr-only">, {{ conflictLabel() }}</span>
+      }
+    </button>
+  }
+
+  <div class="history" role="group" aria-label="History" i18n-aria-label="@@seating.history">
+    <button
+      stIconButton
+      icon="undo"
+      variant="secondary"
+      [aria-label]="undoLabel()"
+      [disabled]="!events.canUndo()"
+      (click)="actions.undo()"
+    ></button>
+    <button
+      stIconButton
+      icon="redo"
+      variant="secondary"
+      [aria-label]="redoLabel()"
+      [disabled]="!events.canRedo()"
+      (click)="actions.redo()"
+    ></button>
+  </div>
+  <st-add-table-menu (add)="addTable($event)" />
+  <button stButton variant="primary" class="auto" (click)="commands.autoSeat()">
+    <st-icon name="sparkles" />
+    <span i18n="@@seating.auto">Auto-seat</span>
+  </button>
+</header>
+
+<div class="body" [class.no-list]="listCollapsed()" [class.no-rail]="railCollapsed()">
+  @if (!listCollapsed()) {
+    <aside class="list" aria-label="Unseated guests" i18n-aria-label="@@seating.listLabel">
+      <st-unseated-list />
+    </aside>
+  }
+
+  <div class="stage">
+    @defer (on idle) {
+      <st-floor-plan class="plan" />
+    } @placeholder {
+      <div class="plan-skeleton" aria-busy="true">
+        <span class="st-sr-only" i18n="@@seating.loadingPlan">Loading the floor plan</span>
+        <st-skeleton shape="block" height="100%" />
+      </div>
+    }
+
+    @if (holding(); as h) {
+      <div class="holding" animate.enter="holding-in">
+        <span class="holding-text">
+          <ng-container i18n="@@hold.bar"
+            >Holding <strong>{{ h.label }}</strong></ng-container
+          >
+          @if (h.count > 1) {
+            <span class="st-mono holding-n">{{ h.count }}</span>
+          }
+          <span class="holding-hint">{{ h.hint ?? chooseLabel }}</span>
+        </span>
+        <button type="button" class="holding-cancel" (click)="commands.cancel()">
+          <st-kbd>Esc</st-kbd>
+          <span i18n="@@hold.cancelButton">to cancel</span>
+        </button>
+      </div>
+    }
+  </div>
+
+  @if (!railCollapsed()) {
+    <aside class="rail" aria-label="Rules and details" i18n-aria-label="@@seating.railLabel">
+      <st-seating-rail />
+    </aside>
+  }
+</div>
+
+@if (listCollapsed()) {
+  <st-drawer
+    [open]="view.listOpen()"
+    (openChange)="view.setListOpen($event)"
+    heading="Unseated guests"
+    i18n-heading="@@seating.listLabel"
+  >
+    <st-unseated-list class="in-drawer" inDrawer (picked)="view.setListOpen(false)" />
+  </st-drawer>
+}
+@if (railCollapsed()) {
+  <st-drawer
+    [open]="view.railOpen()"
+    (openChange)="view.setRailOpen($event)"
+    heading="Rules and details"
+    i18n-heading="@@seating.railLabel"
+  >
+    <st-seating-rail showToggle />
+  </st-drawer>
+}
+
+@if (chip(); as c) {
+  <div class="chip" aria-hidden="true" [style.left.px]="c.x" [style.top.px]="c.y">
+    {{ c.label }}<span class="chip-n st-num">1</span>
+  </div>
+}

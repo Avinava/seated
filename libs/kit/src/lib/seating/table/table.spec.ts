@@ -137,6 +137,11 @@ describe('StTable', () => {
     expect(host.events).toEqual(['seat:3', 'enter:5', 'table']);
   });
 
+  it('marks each seat with its index so a drop under the pointer can be hit-tested', async () => {
+    const { seatEls } = await setup();
+    expect(seatEls().map((s) => s.dataset['seatIndex'])).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
+  });
+
   it('reflects selection on the top and positions itself when given a centre', async () => {
     const { fixture, host, table, top } = await setup();
     expect(table.classList).not.toContain('is-placed');
