@@ -14,6 +14,7 @@ import { CLOCK } from '../core/clock';
 import { withHistory } from '../core/history/with-history';
 import { EventRepository } from '../core/storage/event-repository';
 import type { Command } from './command';
+import { SampleSeed } from './sample-seed';
 
 type LoadStatus = 'idle' | 'loading' | 'ready' | 'missing';
 type SaveStatus = 'saved' | 'saving' | 'error';
@@ -53,10 +54,11 @@ export const EventStore = signalStore(
       comingCount: computed(() => guests().filter((g) => g.rsvp === 'accepted').length),
     };
   }),
-  withMethods((store, repo = inject(EventRepository), clock = inject(CLOCK)) => ({
+  withMethods((store, repo = inject(EventRepository), clock = inject(CLOCK), seed = inject(SampleSeed)) => ({
     async open(id: EventId): Promise<void> {
       if (store.doc()?.id === id) return;
       patchState(store, { status: 'loading' });
+      await seed.ready();
       const event = await repo.get(id);
       store.reset(event ?? null);
       patchState(store, { status: event ? 'ready' : 'missing' });

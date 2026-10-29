@@ -1,0 +1,78 @@
+<a class="skip" href="#main" i18n="@@shell.skip">Skip to content</a>
+
+<div class="frame">
+  <nav class="side" aria-label="Main" i18n-aria-label="@@shell.navLabel" data-noprint>
+    <a class="brand" routerLink="/" aria-label="Seated, your events" i18n-aria-label="@@shell.home">
+      <st-logo />
+      <span class="wordmark st-display">Seated</span>
+    </a>
+
+    @if (event(); as e) {
+      <a class="event" routerLink="/" title="Switch event" i18n-title="@@shell.switch">
+        <span class="event-name">{{ e.name }}</span>
+        <span class="event-meta st-mono">{{ eventDate() | date: 'EEE d MMM' }} · {{ e.venue }}</span>
+        <st-icon name="chevron-down" class="event-chevron" />
+      </a>
+    }
+
+    <button type="button" class="search" (click)="palette.open.set(true)">
+      <st-icon name="search" />
+      <span i18n="@@shell.search">Search or jump to</span>
+      <st-kbd keys="Mod+K" />
+    </button>
+
+    <ul class="nav">
+      <li>
+        <a
+          class="nav-item"
+          routerLink="/"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ariaCurrentWhenActive="page"
+        >
+          <st-icon name="home" />
+          <span i18n="@@nav.events">Events</span>
+        </a>
+      </li>
+      @for (item of nav(); track item.path) {
+        <li>
+          <a class="nav-item" [routerLink]="item.path" routerLinkActive="active" ariaCurrentWhenActive="page">
+            <st-icon [name]="item.icon" />
+            <span>{{ item.label }}</span>
+            @if (item.meta) {
+              <span class="nav-meta st-num">{{ item.meta }}</span>
+            }
+          </a>
+        </li>
+      }
+    </ul>
+
+    <div class="foot">
+      <span class="saved" [attr.data-state]="store.save()" role="status">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="saved-label">{{ saveLabel() }}</span>
+      </span>
+      <button
+        type="button"
+        stIconButton
+        variant="ghost"
+        [icon]="theme.resolved() === 'dark' ? 'sun' : 'moon'"
+        [aria-label]="themeLabel()"
+        (click)="theme.toggle()"
+      ></button>
+    </div>
+  </nav>
+
+  <main id="main" class="main" tabindex="-1">
+    @if (!connectivity.online()) {
+      <div class="offline" role="status" data-noprint>
+        <st-icon name="wifi-off" />
+        <span i18n="@@shell.offline">You're offline. Everything still works and is saved on this device.</span>
+      </div>
+    }
+    <router-outlet />
+  </main>
+</div>
+
+<st-command-palette [(open)]="palette.open" [items]="palette.items()" (run)="runCommand($event)" />
+<st-toast-host />

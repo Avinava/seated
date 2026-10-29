@@ -11,8 +11,7 @@ import {
 } from '@seated/domain';
 import { CLOCK } from '../core/clock';
 import { EventRepository } from '../core/storage/event-repository';
-
-const SEEDED = 'seated.seeded';
+import { SampleSeed } from './sample-seed';
 
 interface EventsState {
   events: SeatingEvent[];
@@ -24,23 +23,17 @@ export const EventsStore = signalStore(
   { providedIn: 'root' },
   withState<EventsState>({ events: [], status: 'idle' }),
   withComputed(({ events }) => ({
-    /** Soonest first; past events sink to the end. */
+    /** Soonest first. */
     sorted: computed(() => [...events()].sort((a, b) => a.date.localeCompare(b.date))),
   })),
-  withMethods((store, repo = inject(EventRepository), clock = inject(CLOCK)) => {
+  withMethods((store, repo = inject(EventRepository), clock = inject(CLOCK), seed = inject(SampleSeed)) => {
     const now = () => clock();
     return {
-      /** Loads events, adding the sample events the first time the app runs on this device. */
       async load(): Promise<void> {
         if (store.status() === 'loading') return;
         patchState(store, { status: store.events().length ? 'ready' : 'loading' });
-        let events = await repo.list();
-        if (events.length === 0 && !seeded()) {
-          events = createSampleEvents(now());
-          await Promise.all(events.map((e) => repo.put(e)));
-          markSeeded();
-        }
-        patchState(store, { events, status: 'ready' });
+        await seed.ready();
+        patchState(store, { events: await repo.list(), status: 'ready' });
       },
 
       async create(kind: EventKind, name: string, date: string): Promise<SeatingEvent> {
@@ -84,19 +77,3 @@ export const EventsStore = signalStore(
     };
   }),
 );
-
-function seeded(): boolean {
-  try {
-    return globalThis.localStorage?.getItem(SEEDED) === '1';
-  } catch {
-    return false;
-  }
-}
-
-function markSeeded(): void {
-  try {
-    globalThis.localStorage?.setItem(SEEDED, '1');
-  } catch {
-    // Without storage the samples come back next visit, which is fine.
-  }
-}
