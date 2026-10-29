@@ -1,0 +1,133 @@
+@use '../overlay';
+
+:host {
+  display: contents;
+}
+
+.scrim {
+  @include overlay.scrim;
+  z-index: var(--st-z-palette);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 12vh var(--st-space-4) var(--st-space-4);
+}
+
+@include overlay.fade-keyframes;
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  width: min(var(--st-size-palette), 100%);
+  max-height: min(520px, 76vh);
+  overflow: hidden;
+  border: 1px solid var(--st-line);
+  border-radius: var(--st-radius-2xl);
+  background: var(--st-surface);
+  color: var(--st-text);
+  box-shadow: var(--st-shadow-raised);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--st-space-3);
+  padding: 0 var(--st-space-4);
+  border-bottom: 1px solid var(--st-line);
+  color: var(--st-text-3);
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 52px;
+    border: 0;
+    background: transparent;
+    color: var(--st-text);
+    font-size: var(--st-fs-lg);
+    outline: none;
+
+    &::placeholder {
+      color: var(--st-text-3);
+    }
+  }
+}
+
+.list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--st-space-2);
+  overscroll-behavior: contain;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.group + .group {
+  margin-top: var(--st-space-2);
+}
+
+.group-label {
+  padding: var(--st-space-2) var(--st-space-3) var(--st-space-1);
+  color: var(--st-text-3);
+  font-family: var(--st-font-mono);
+  font-size: var(--st-fs-2xs);
+  letter-spacing: var(--st-tracking-mono);
+  text-transform: uppercase;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: var(--st-space-3);
+  min-height: 40px;
+  padding: 0 var(--st-space-3);
+  border-radius: var(--st-radius-md);
+  color: var(--st-text);
+  cursor: pointer;
+
+  &.is-active {
+    background: var(--st-surface-2);
+    box-shadow: inset 2px 0 0 var(--st-accent);
+
+    .option-icon {
+      color: var(--st-accent);
+    }
+  }
+}
+
+.option-icon {
+  color: var(--st-text-3);
+}
+
+.option-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.option-hint {
+  color: var(--st-text-3);
+  font-size: var(--st-fs-sm);
+  white-space: nowrap;
+}
+
+.empty {
+  padding: var(--st-space-8) var(--st-space-4);
+  color: var(--st-text-2);
+  text-align: center;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+}
+
+.panel-in {
+  animation: panel-in var(--st-dur-base) var(--st-ease-spring);
+}

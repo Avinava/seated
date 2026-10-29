@@ -1,0 +1,19 @@
+// Storybook-only additions. The motion toolbar sets data-motion on <html>;
+// this mirrors the global prefers-reduced-motion rule from the kit styles.
+:root[data-motion='reduce'] {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// Stories render on the page background; the docs canvas follows the theme too.
+.docs-story,
+.sb-story {
+  background: var(--st-bg);
+  color: var(--st-text);
+}

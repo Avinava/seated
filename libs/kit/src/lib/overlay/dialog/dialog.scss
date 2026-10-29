@@ -1,0 +1,76 @@
+@use '../overlay';
+
+:host {
+  display: contents;
+}
+
+// The scrim doubles as the centring container, so the panel sits inside it.
+.scrim {
+  @include overlay.scrim;
+  z-index: var(--st-z-drawer);
+  display: grid;
+  place-items: center;
+  padding: var(--st-space-4);
+  overflow: auto;
+}
+
+@include overlay.fade-keyframes;
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  width: min(var(--st-size-drawer), 100%);
+  max-height: calc(100dvh - var(--st-space-8));
+  border: 1px solid var(--st-line);
+  border-radius: var(--st-radius-2xl);
+  background: var(--st-surface);
+  color: var(--st-text);
+  box-shadow: var(--st-shadow-raised);
+  outline: none;
+}
+
+.header {
+  @include overlay.header;
+  border-bottom: 0;
+  padding-bottom: var(--st-space-2);
+}
+
+.close {
+  @include overlay.close-button;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--st-space-2) var(--st-space-5) var(--st-space-5);
+  color: var(--st-text-2);
+}
+
+.footer {
+  @include overlay.footer;
+  border-top: 0;
+  padding-top: 0;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+
+@keyframes panel-out {
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+.panel-in {
+  animation: panel-in var(--st-dur-base) var(--st-ease-spring);
+}
+
+.panel-out {
+  animation: panel-out var(--st-dur-fast) var(--st-ease-settle) forwards;
+}

@@ -1,0 +1,117 @@
+<div
+  cdkVirtualScrollingElement
+  class="scroller"
+  role="grid"
+  tabindex="0"
+  [attr.aria-label]="label()"
+  [attr.aria-multiselectable]="selectable() || null"
+  [attr.aria-rowcount]="rowCount()"
+  [attr.aria-colcount]="colCount()"
+  [attr.aria-activedescendant]="activeDescendant()"
+  [class.is-focused]="focused()"
+  (focus)="onFocus()"
+  (blur)="onBlur()"
+  (keydown)="onKeydown($event)"
+  (click)="onClick($event)"
+>
+  <div class="head" role="rowgroup">
+    <div class="tr" role="row" aria-rowindex="1">
+      @if (selectable()) {
+        <div class="th select-cell" role="columnheader">
+          <st-checkbox
+            [checked]="allSelected()"
+            [indeterminate]="someSelected()"
+            [disabled]="items().length === 0"
+            [ariaLabel]="selectAllLabel"
+            (checkedChange)="setAll($event)"
+          />
+        </div>
+      }
+      @for (col of columns(); track col.key) {
+        <div
+          class="th"
+          role="columnheader"
+          [class.end]="col.align === 'end'"
+          [attr.aria-sort]="col.sortable ? ariaSort(col.key) : null"
+        >
+          @if (col.sortable) {
+            <button type="button" class="sort" (click)="cycleSort(col.key)">
+              <ng-container *ngTemplateOutlet="headerLabel; context: { $implicit: col }" />
+              <st-icon
+                class="sort-icon"
+                [attr.data-dir]="ariaSort(col.key)"
+                [name]="ariaSort(col.key) === 'descending' ? 'arrow-down' : 'arrow-up'"
+                [size]="12"
+              />
+            </button>
+          } @else {
+            <ng-container *ngTemplateOutlet="headerLabel; context: { $implicit: col }" />
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <cdk-virtual-scroll-viewport
+    role="rowgroup"
+    [itemSize]="rowHeight()"
+    [minBufferPx]="rowHeight() * 8"
+    [maxBufferPx]="rowHeight() * 16"
+  >
+    <ng-container *cdkVirtualFor="let item of items(); trackBy: trackItem">
+      @if (item.kind === 'row') {
+        @let selected = selection().has(item.key);
+        <div
+          class="tr row"
+          role="row"
+          [id]="rowId(item.index)"
+          [attr.data-row-key]="item.key"
+          [attr.aria-rowindex]="item.index + 2"
+          [attr.aria-selected]="selectable() ? selected : null"
+          [class.is-selected]="selected"
+          [class.is-active]="item.index === activeIndex()"
+        >
+          @if (selectable()) {
+            <div class="td select-cell" role="gridcell">
+              <span class="box" aria-hidden="true">
+                <svg viewBox="0 0 16 16" focusable="false"><path d="m3.5 8.5 3 3 6-7" /></svg>
+              </span>
+            </div>
+          }
+          @for (col of columns(); track col.key) {
+            <div class="td" role="gridcell" [class.end]="col.align === 'end'">
+              @if (cellTemplates().get(col.key); as tpl) {
+                <ng-container *ngTemplateOutlet="tpl; context: { $implicit: item.row, index: item.dataIndex }" />
+              } @else {
+                {{ text(item.row, col.key) }}
+              }
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="tr group" role="row" [id]="rowId(item.index)" [attr.aria-rowindex]="item.index + 2">
+          <div class="td" role="gridcell" [attr.aria-colspan]="colCount()">
+            <span class="group-label">{{ item.group.label }}</span>
+            <span class="group-count">{{ item.group.count }}</span>
+          </div>
+        </div>
+      }
+    </ng-container>
+  </cdk-virtual-scroll-viewport>
+
+  @if (items().length === 0) {
+    <div class="empty-group" role="rowgroup">
+      <div class="tr empty" role="row" aria-rowindex="2">
+        <div class="td" role="gridcell" [attr.aria-colspan]="colCount()">{{ emptyText() }}</div>
+      </div>
+    </div>
+  }
+</div>
+
+<ng-template #headerLabel let-col>
+  @if (headerTemplates().get(col.key); as tpl) {
+    <ng-container *ngTemplateOutlet="tpl; context: { $implicit: col }" />
+  } @else {
+    {{ col.header }}
+  }
+</ng-template>

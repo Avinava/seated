@@ -1,0 +1,60 @@
+@if (open()) {
+  <div class="scrim" animate.enter="scrim-in" animate.leave="scrim-out">
+    <div
+      class="panel"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="label()"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+      animate.enter="panel-in"
+    >
+      <div class="search">
+        <st-icon name="search" [size]="18" />
+        <input
+          [id]="inputId"
+          type="text"
+          role="combobox"
+          aria-expanded="true"
+          aria-haspopup="listbox"
+          aria-autocomplete="list"
+          autocomplete="off"
+          spellcheck="false"
+          [attr.aria-label]="label()"
+          [attr.aria-controls]="listId"
+          [attr.aria-activedescendant]="activeId()"
+          [placeholder]="placeholder()"
+          [value]="query()"
+          (input)="onInput($event)"
+          (keydown)="onKeydown($event)"
+        />
+        <st-kbd keys="Esc" />
+      </div>
+
+      <div class="list" role="listbox" [id]="listId" [attr.aria-label]="label()">
+        @for (group of groups(); track group.name; let g = $index) {
+          <div class="group" role="group" [attr.aria-labelledby]="groupId(g)">
+            <div class="group-label" [id]="groupId(g)">{{ group.name }}</div>
+            @for (item of group.items; track item.id) {
+              <div class="option" [stPaletteOption]="item" (chosen)="choose($event)" (hovered)="hover($event)">
+                <st-icon class="option-icon" [name]="item.icon ?? 'command'" [size]="16" />
+                <span class="option-label">{{ item.label }}</span>
+                @if (item.hint) {
+                  <span class="option-hint">{{ item.hint }}</span>
+                }
+                @if (item.shortcut) {
+                  <st-kbd class="option-kbd" [keys]="item.shortcut" />
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      @if (!results().length) {
+        <p class="empty" i18n="@@st.palette.empty">No matches for "{{ query() }}"</p>
+      }
+      <p class="st-sr-only" role="status">{{ status() }}</p>
+    </div>
+  </div>
+}

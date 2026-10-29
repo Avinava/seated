@@ -1,0 +1,87 @@
+:host {
+  display: inline-flex;
+}
+
+label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--st-space-2);
+  min-height: 24px;
+  color: var(--st-text);
+  font-size: var(--st-fs-md);
+  cursor: pointer;
+}
+
+:host(.is-disabled) label {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.box {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  flex: none;
+
+  // A 44px target centred on the box, without changing layout.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -14px;
+  }
+}
+
+input {
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  // text-3 keeps the box edge at 3:1 against the surface (WCAG 1.4.11).
+  border: 1.5px solid var(--st-text-3);
+  border-radius: 4px;
+  background: var(--st-surface);
+  cursor: inherit;
+  transition:
+    background-color var(--st-dur-fast) var(--st-ease-settle),
+    border-color var(--st-dur-fast) var(--st-ease-settle);
+
+  &:hover:not(:disabled) {
+    border-color: var(--st-text-2);
+  }
+
+  &:checked,
+  &:indeterminate {
+    border-color: var(--st-text);
+    background: var(--st-text);
+  }
+}
+
+svg {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: var(--st-bg);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity var(--st-dur-fast) var(--st-ease-settle),
+    transform var(--st-dur-base) var(--st-ease-spring);
+}
+
+input:checked + svg,
+input:indeterminate + svg {
+  opacity: 1;
+  transform: none;
+}
+
+.label:empty {
+  display: none;
+}

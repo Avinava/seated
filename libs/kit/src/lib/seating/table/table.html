@@ -1,0 +1,40 @@
+<button
+  type="button"
+  class="top"
+  [attr.aria-pressed]="selected()"
+  [style.width.px]="top().w"
+  [style.height.px]="top().h"
+  [style.left.px]="box().cx - top().w / 2"
+  [style.top.px]="box().cy - top().h / 2"
+  (click)="tableActivate.emit()"
+>
+  <!-- Named by text, not aria-label: one hidden sentence that contains the visible label. -->
+  <span class="label" aria-hidden="true">{{ label() }}</span>
+  <span class="count" aria-hidden="true">{{ filled() }}/{{ seats().length }}</span>
+  <span class="st-sr-only">{{ topName() }}</span>
+</button>
+
+@for (seat of seats(); track $index; let i = $index) {
+  @let p = positions()[i];
+  @if (p) {
+    <!-- eslint-disable-next-line @angular-eslint/template/elements-content -- StSeat renders its label as text -->
+    <button
+      stSeat
+      class="seat"
+      [state]="seat.state"
+      [initials]="seat.initials"
+      [tone]="seat.tone"
+      [label]="seat.label"
+      [justPlaced]="seat.justPlaced ?? false"
+      [tabIndex]="i === activeSeat() ? 0 : -1"
+      [style.left.px]="box().cx + p.x - halfSeat"
+      [style.top.px]="box().cy + p.y - halfSeat"
+      (focus)="onSeatFocus(i)"
+      (keydown)="onSeatKeydown($event)"
+      (click)="seatActivate.emit(i)"
+      (pointerdown)="seatPointerDown.emit({ index: i, event: $event })"
+      (pointerenter)="seatPointerEnter.emit(i)"
+      (pointerleave)="seatPointerLeave.emit(i)"
+    ></button>
+  }
+}

@@ -1,0 +1,66 @@
+@use '../overlay';
+
+:host {
+  display: contents;
+}
+
+.scrim {
+  @include overlay.scrim;
+  z-index: var(--st-z-drawer);
+}
+
+@include overlay.fade-keyframes;
+
+.panel {
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: var(--st-z-drawer);
+  display: flex;
+  flex-direction: column;
+  width: min(var(--st-size-drawer), 100vw);
+  border-left: 1px solid var(--st-line);
+  background: var(--st-surface);
+  color: var(--st-text);
+  box-shadow: var(--st-shadow-raised);
+  outline: none;
+}
+
+.header {
+  @include overlay.header;
+}
+
+.close {
+  @include overlay.close-button;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--st-space-5);
+  overscroll-behavior: contain;
+}
+
+.footer {
+  @include overlay.footer;
+}
+
+@keyframes panel-in {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes panel-out {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.panel-in {
+  animation: panel-in var(--st-dur-slow) var(--st-ease-settle);
+}
+
+.panel-out {
+  animation: panel-out var(--st-dur-base) var(--st-ease-settle) forwards;
+}

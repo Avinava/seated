@@ -1,0 +1,104 @@
+:host {
+  --_h: var(--st-size-control);
+  --_px: var(--st-space-3);
+  --_bg: var(--st-surface);
+  --_fg: var(--st-text);
+  --_border: var(--st-line);
+  --_border-hover: var(--st-line-2);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--_h);
+  padding: 0 var(--_px);
+  border: 1px solid var(--_border);
+  border-radius: var(--st-radius-md);
+  background: var(--_bg);
+  color: var(--_fg);
+  font-family: var(--st-font-ui);
+  font-size: var(--st-fs-md);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--st-dur-fast) var(--st-ease-settle),
+    border-color var(--st-dur-fast) var(--st-ease-settle),
+    transform var(--st-dur-fast) var(--st-ease-settle);
+}
+
+// Small buttons keep a 44px touch target without growing visually.
+:host::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto;
+  min-height: var(--st-size-target);
+  transform: translateY(-50%);
+}
+
+:host(:hover) {
+  border-color: var(--_border-hover);
+}
+
+:host(:active) {
+  transform: translateY(0.5px);
+}
+
+:host(:disabled),
+:host([aria-disabled='true']) {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+:host([data-size='sm']) {
+  --_h: var(--st-size-control-sm);
+  --_px: 10px;
+  font-size: var(--st-fs-sm);
+}
+
+:host([data-size='lg']) {
+  --_h: var(--st-size-control-lg);
+  --_px: var(--st-space-4);
+  font-size: var(--st-fs-base);
+}
+
+:host([data-variant='primary']) {
+  --_bg: var(--st-text);
+  --_fg: var(--st-bg);
+  --_border: var(--st-text);
+  --_border-hover: var(--st-text);
+  font-weight: 600;
+}
+
+:host([data-variant='primary']:hover) {
+  --_bg: color-mix(in oklch, var(--st-text) 88%, var(--st-bg));
+}
+
+:host([data-variant='danger']) {
+  --_bg: var(--st-danger);
+  --_fg: var(--st-bg);
+  --_border: var(--st-danger);
+  --_border-hover: var(--st-danger);
+  font-weight: 600;
+}
+
+:host([data-variant='danger']:hover) {
+  --_bg: color-mix(in oklch, var(--st-danger) 88%, var(--st-text));
+}
+
+// Ghost inherits its colour so it works on any surface, including the dark bulk bar.
+:host([data-variant='ghost']) {
+  --_bg: transparent;
+  --_fg: inherit;
+  --_border: transparent;
+  --_border-hover: transparent;
+}
+
+:host([data-variant='ghost']:hover) {
+  --_bg: color-mix(in oklch, currentColor 10%, transparent);
+}

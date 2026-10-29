@@ -1,0 +1,74 @@
+:host {
+  position: relative;
+  display: block;
+  flex: none;
+}
+
+// Placed on a floor: x and y are the table centre in plan units.
+:host(.is-placed) {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.top {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 0;
+  border: 1px solid var(--st-line-2);
+  border-radius: var(--st-radius-lg);
+  background: var(--st-surface);
+  color: var(--st-text);
+  box-shadow: var(--st-shadow-small);
+  transition:
+    border-color var(--st-dur-fast) var(--st-ease-settle),
+    box-shadow var(--st-dur-base) var(--st-ease-settle);
+
+  &:hover {
+    border-color: var(--st-text-3);
+  }
+}
+
+:host([data-shape='round']) .top {
+  border-radius: 50%;
+}
+
+:host([data-shape='head']) .top {
+  flex-direction: row;
+  gap: var(--st-space-2);
+}
+
+.label {
+  font-family: var(--st-font-display);
+  font-size: var(--st-fs-md);
+  font-weight: 600;
+  letter-spacing: var(--st-tracking-display);
+  line-height: 1;
+}
+
+.count {
+  font-family: var(--st-font-mono);
+  font-size: var(--st-fs-2xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: var(--st-text-3);
+}
+
+:host(.is-selected) .top {
+  border-color: var(--st-accent);
+  box-shadow: 0 0 0 4px var(--st-accent-soft);
+}
+
+:host(.is-conflict) .top {
+  border-width: 2px;
+  border-color: var(--st-danger);
+  box-shadow: 0 0 0 4px var(--st-danger-soft);
+}
+
+.seat {
+  position: absolute;
+}

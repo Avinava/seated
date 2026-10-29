@@ -1,0 +1,67 @@
+// Unencapsulated on purpose: these rules style the native control the
+// component is applied to. Everything is scoped by the .st-input class.
+.st-input {
+  display: block;
+  width: 100%;
+  min-height: var(--st-size-control);
+  padding: 0 var(--st-space-3);
+  border: 1px solid var(--st-line);
+  border-radius: var(--st-radius-md);
+  background: var(--st-surface);
+  color: var(--st-text);
+  font-family: var(--st-font-ui);
+  font-size: var(--st-fs-base);
+  line-height: 1.4;
+  transition:
+    border-color var(--st-dur-fast) var(--st-ease-settle),
+    box-shadow var(--st-dur-fast) var(--st-ease-settle);
+
+  &::placeholder {
+    color: var(--st-text-3);
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--st-line-2);
+  }
+
+  // The ring replaces the global outline so the field keeps its radius.
+  &:focus-visible {
+    outline: none;
+    border-color: var(--st-accent);
+    box-shadow: 0 0 0 3px var(--st-accent-soft);
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--st-danger);
+
+    &:focus-visible {
+      box-shadow: 0 0 0 3px var(--st-danger-soft);
+    }
+  }
+
+  &:disabled {
+    background: var(--st-surface-2);
+    color: var(--st-text-3);
+    cursor: not-allowed;
+  }
+}
+
+textarea.st-input {
+  min-height: 88px;
+  padding-block: var(--st-space-2);
+  resize: vertical;
+}
+
+select.st-input {
+  appearance: none;
+  padding-right: var(--st-space-8);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--st-text-3) 50%),
+    linear-gradient(-45deg, transparent 50%, var(--st-text-3) 50%);
+  background-position:
+    calc(100% - 17px) 50%,
+    calc(100% - 12px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}

@@ -1,0 +1,31 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Introduction" />
+
+# Seated kit
+
+The design kit behind Seated, an event seating planner. Standalone, zoneless Angular components with signal inputs,
+`OnPush` everywhere and accessibility treated as a feature.
+
+## Principles
+
+- **Tokens only.** Every colour, font, size, radius and duration is a `--st-*` custom property generated from
+  `design/tokens.json`. Use the Theme toolbar to switch light and dark; the Motion toolbar mirrors
+  `prefers-reduced-motion`.
+- **Colour is never the only signal.** Seat states change border, ring and size together; pills and zones always
+  carry text.
+- **Real controls.** Buttons are buttons, switches are `role="switch"`, seats in a table are one composite widget
+  with a roving tab stop, the grid uses `aria-activedescendant`, overlays trap and restore focus.
+- **Plain view models.** Components take strings, numbers and small interfaces such as `SeatView`, never domain
+  entities, so the kit stays presentational.
+
+## Testing
+
+Each component has a Vitest spec (`pnpm exec ng test kit`). Each story's `play` function is an interaction test, and
+the test runner scans every story with axe in both themes:
+
+```sh
+pnpm run build-storybook
+pnpm run serve-storybook   # in another terminal
+pnpm run test-storybook
+```

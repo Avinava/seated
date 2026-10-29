@@ -1,0 +1,107 @@
+:host {
+  --_tone: var(--st-text-3);
+  --_tone-soft: var(--st-surface-2);
+  --_glow: color-mix(in oklch, var(--st-accent) 22%, transparent);
+
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: var(--st-size-seat);
+  height: var(--st-size-seat);
+  padding: 0;
+  border: 1.5px dashed var(--st-line-2);
+  border-radius: 50%;
+  background: var(--st-surface);
+  color: var(--st-text);
+  font-family: var(--st-font-mono);
+  font-size: var(--st-fs-2xs);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+  cursor: pointer;
+  touch-action: none;
+  transition:
+    transform var(--st-dur-base) var(--st-ease-spring),
+    background-color var(--st-dur-fast) var(--st-ease-settle),
+    border-color var(--st-dur-fast) var(--st-ease-settle),
+    box-shadow var(--st-dur-base) var(--st-ease-settle);
+}
+
+// A 40px hit area (the seat pitch), so neighbouring targets never overlap.
+:host::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+}
+
+:host([data-tone='1']) {
+  --_tone: var(--st-cat-1);
+  --_tone-soft: var(--st-cat-1-soft);
+}
+
+:host([data-tone='2']) {
+  --_tone: var(--st-cat-2);
+  --_tone-soft: var(--st-cat-2-soft);
+}
+
+:host([data-tone='3']) {
+  --_tone: var(--st-cat-3);
+  --_tone-soft: var(--st-cat-3-soft);
+}
+
+:host([data-tone='4']) {
+  --_tone: var(--st-cat-4);
+  --_tone-soft: var(--st-cat-4-soft);
+}
+
+:host([data-state='empty']:hover) {
+  border-color: var(--st-text-3);
+  background: var(--st-surface-2);
+}
+
+:host([data-state='filled']),
+:host([data-state='picked']),
+:host([data-state='conflict']) {
+  border-style: solid;
+  border-color: var(--_tone);
+  background: var(--_tone-soft);
+}
+
+:host([data-state='drop-target']) {
+  border-style: solid;
+  border-color: var(--st-accent);
+  background: var(--st-accent-soft);
+  transform: scale(1.16);
+}
+
+:host([data-state='picked']) {
+  box-shadow: 0 0 0 3px var(--st-accent);
+}
+
+:host([data-state='conflict']) {
+  border-width: 2px;
+  border-color: var(--st-danger);
+  box-shadow: 0 0 0 4px var(--st-danger-soft);
+}
+
+:host(:focus-visible) {
+  outline-offset: 3px;
+}
+
+:host(.is-placed) {
+  animation:
+    st-pop var(--st-dur-slow) var(--st-ease-spring),
+    st-seat-glow var(--st-dur-glow) var(--st-ease-settle);
+}
+
+@keyframes st-seat-glow {
+  from {
+    box-shadow: 0 0 0 8px var(--_glow);
+  }
+
+  to {
+    box-shadow: 0 0 0 8px transparent;
+  }
+}

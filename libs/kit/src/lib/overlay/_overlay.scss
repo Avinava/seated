@@ -1,0 +1,96 @@
+// Shared pieces for modal surfaces: the scrim, the panel header and its close button.
+
+@mixin scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--st-scrim);
+}
+
+@mixin fade-keyframes {
+  @keyframes scrim-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes scrim-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  .scrim-in {
+    animation: scrim-in var(--st-dur-base) var(--st-ease-settle);
+  }
+
+  .scrim-out {
+    animation: scrim-out var(--st-dur-fast) var(--st-ease-settle) forwards;
+  }
+}
+
+@mixin header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--st-space-3);
+  padding: var(--st-space-5) var(--st-space-5) var(--st-space-4);
+  border-bottom: 1px solid var(--st-line);
+
+  .heading {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .title {
+    font-family: var(--st-font-display);
+    font-size: var(--st-fs-xl);
+    font-weight: 600;
+    letter-spacing: var(--st-tracking-display);
+    line-height: 1.15;
+    font-variation-settings: 'opsz' 48;
+  }
+
+  .description {
+    margin-top: var(--st-space-1);
+    color: var(--st-text-2);
+    font-size: var(--st-fs-md);
+  }
+}
+
+@mixin close-button {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--st-size-control);
+  height: var(--st-size-control);
+  margin: -4px -6px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--st-radius-md);
+  background: transparent;
+  color: var(--st-text-2);
+  transition: background-color var(--st-dur-fast) var(--st-ease-settle);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+  }
+
+  &:hover {
+    background: var(--st-surface-2);
+    color: var(--st-text);
+  }
+}
+
+@mixin footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--st-space-2);
+  padding: var(--st-space-4) var(--st-space-5);
+  border-top: 1px solid var(--st-line);
+
+  &:empty {
+    display: none;
+  }
+}
